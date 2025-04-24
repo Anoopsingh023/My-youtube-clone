@@ -2,15 +2,20 @@
   "name": "youtube-clone",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
   },
   "author": "Anoop Singh",
   "license": "ISC",
-  "description": "Youtube Clone App",
+  "description": "Video Streaming Platform",
   "dependencies": {
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mongoose": "^8.13.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prettier": "^3.5.3"
   }
 }
