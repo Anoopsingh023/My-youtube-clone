@@ -1,4 +1,4 @@
-class apiError extends error{
+class apiError extends Error{
     constructor(
         statuscode,
         error=[],
