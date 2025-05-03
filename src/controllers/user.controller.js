@@ -98,7 +98,7 @@ const registrUser = asyncHandler(async (req, res) => {
 
 })
 
-const login = asyncHandler(async (req, res)=>{
+const loginUser = asyncHandler(async (req, res)=>{
     // get user data
     // validation
     // find user in database
@@ -180,6 +180,6 @@ const logoutUser = asyncHandler(async(req,res)=>{
 
 export {
     registrUser,
-    login,
+    loginUser,
     logoutUser
 }
