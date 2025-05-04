@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { 
-    login, 
+    loginUser, 
     logoutUser, 
     registrUser 
 } from "../controllers/user.controller.js";
@@ -24,7 +24,7 @@ router.route("/register").post(
 router.route("/login").post(loginUser)
 
 // Secure route
-router.route("/logoutUser").post(verifyJWT, logoutUser)
+router.route("/logout").post(verifyJWT, logoutUser)
 
 export default router
 

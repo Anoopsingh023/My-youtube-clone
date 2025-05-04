@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs"
+import { apiError } from "./apiError";
 
 // Configuration
 cloudinary.config({
@@ -28,4 +29,12 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
-export {uploadOnCloudinary}
+const deleteImageFromCloudinary = async(imageId) =>{
+  try {
+    const deleteResponse = await cloudinary.uploader.destroy(imageId, {invalidate: true})
+  } catch (error) {
+    throw new apiError(400, error?.message || "unable to delete image")
+  }
+}
+
+export {uploadOnCloudinary, deleteImageFromCloudinary}
