@@ -29,6 +29,7 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
+// Delete old image from cloudinary
 const deleteImageFromCloudinary = async(imageId) =>{
   try {
     const deleteResponse = await cloudinary.uploader.destroy(imageId, {invalidate: true})

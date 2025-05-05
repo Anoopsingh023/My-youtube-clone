@@ -19,8 +19,9 @@ router.route("/register").post(
             name: "coverImage",
             maxCount: 1
         }
-    ]),
+    ]), 
     registrUser)
+    
 router.route("/login").post(loginUser)
 
 // Secure route
