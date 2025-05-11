@@ -1,10 +1,11 @@
 import {asyncHandler} from "../utils/asyncHandler.js"
 import {apiError} from "../utils/apiError.js"
-import {User } from "../models/user.model.js"
+import {User} from "../models/user.model.js"
 import {uploadOnCloudinary, deleteImageFromCloudinary} from "../utils/cloudinary.js"
 import {apiResponse} from "../utils/apiResponse.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
+import { verifyJWT } from "../middlewares/auth.middleware.js"
 
 
 
@@ -18,8 +19,10 @@ const generateAccessAndRefereshTokens = async(userId)=>{
 
         user.refreshToken=refreshToken
         await user.save({validateBeforeSave: false})
+        // console.log("access Token" , accessToken)
+        // console.log("refresh Token" , refreshToken)
 
-        return {accessToken,refreshToken}
+        return {accessToken, refreshToken}
 
     } catch (error) {
         throw new apiError(500, "Something went wrong while generating referesh and access token")
@@ -214,16 +217,19 @@ const refreshAccessToken = asyncHandler(async (req, res)=>{
             secure: true
         }
     
-        const {accessToken, newrefreshToken} = generateAccessAndRefereshTokens(user._id)
+        const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(user._id)
+        
+        // console.log("access Token" , accessToken)
+        // console.log("refresh Token" , refreshToken)
     
         return res
         .status(200)
         .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", newrefreshToken, options)
+        .cookie("refreshToken", refreshToken, options)
         .json(
             new apiResponse(
                 200,
-                {accessToken, refreshToken: newrefreshToken},
+                {accessToken, refreshToken},
                 "Access token refreshed"
             )
         )
@@ -242,7 +248,8 @@ const changeCurrentPasswaord = asyncHandler(async(req,res)=>{
 
     const {oldPassword, newPassword} = req.body
 
-    const user = await User.findById(user?._id)
+    const user = await User.findById(req.user?._id)
+    console.log(user)
     const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
     if(!isPasswordCorrect){
         throw new apiError(400, "Invalid password")
@@ -312,8 +319,8 @@ const updateUserAvatar = asyncHandler(async(req,res)=>{
         throw new apiError(400, "Avatar file is missing")
     }
 
-    const oldAvatar = await User.findById(req.user?._id)
-    const deleteOldAvatarImage = await deleteImageFromCloudinary(oldAvatar?.avatar.url)
+    // const oldAvatar = await User.findById(req.user?._id)
+    // const deleteOldAvatarImage = await deleteImageFromCloudinary(oldAvatar?.avatar.url)
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
     if(!avatar.url){
