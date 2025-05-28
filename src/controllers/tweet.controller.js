@@ -53,22 +53,28 @@ const getUserTweets = asyncHandler(async(req,res)=>{
     )
 })
 
+// not working
 const deleteTweet = asyncHandler(async(req,res)=>{
     // get tweet by id
     // delete
     // return res
-    const tweet = await Tweet.findByIdAndDelete(
-        req.params.tweetId,
-        {
-            $unset: {
-                content
-            }
-        }
-    )
+    const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
+    
+    if (!token) {
+        throw new apiError(401, "Unauthorized request");
+    }
+    const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const tweet = await Tweet.findById(req.params.tweetId)
+    // console.log("Verified",verifiedUser,"Tweet", tweet)
+
+    if(verifiedUser._id != tweet.owner){
+        throw new apiError(500, "You don't have permission")
+    }
+    const deletedtweet = await Tweet.findByIdAndDelete(req.params.tweetId)
     return res
     .status(200)
     .json(
-        new apiResponse(200, tweet, "tweet is deleted successfully")
+        new apiResponse(200, deletedtweet, "tweet is deleted successfully")
     )
 })
 

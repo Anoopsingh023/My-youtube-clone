@@ -99,8 +99,6 @@ const updateVideo = asyncHandler(async (req, res) => {
     // update
     // return res
 
-    // console.log("Body", req.body);
-    // console.log("params", req.params)
     const { title, description } = req.body;
     if (!title && !description) {
         throw new apiError(400, "All fields are required");
@@ -189,8 +187,28 @@ const getVideoById = asyncHandler(async(req,res)=>{
     )
 })
 
+// not working
 const deleteVideo = asyncHandler(async(req,res)=>{
+    const {videoId} = req.params
+    const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
 
+    if (!token) {
+        throw new apiError(401, "Unauthorized request");
+    }
+    const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const video = await Video.findById(req.params.videoId);
+
+    if (verifiedUser._id != video.owner) {
+        throw new apiError(500, "You don't have permission");
+    }
+
+    const deletedVideo = await Video.findByIdAndDelete(req.params.videoId)
+
+    return res
+    .status(200)
+    .json(
+        new apiResponse(200, deletedVideo, "Video deleted successfullly")
+    )
 })
 
 const togglePublishStatus = asyncHandler(async(req,res)=>{
