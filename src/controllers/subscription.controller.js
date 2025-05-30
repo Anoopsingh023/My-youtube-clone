@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 import { User } from "../models/user.model.js";
 
 
-
 const toggleSubscription = asyncHandler(async(req,res)=>{
 
     const channel = await User.findById(req.params.channelId)
@@ -151,7 +150,6 @@ const getUserChannelSubscribers = asyncHandler(async(req,res)=>{
     )
     
 })
-
 
 
 export {

@@ -5,6 +5,7 @@ import { Video } from "../models/video.model.js";
 import {
     deleteImageFromCloudinary,
     uploadOnCloudinary,
+    deleteVideoFromCloudinary
 } from "../utils/cloudinary.js";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
@@ -52,7 +53,6 @@ const publishVideo = asyncHandler(async (req, res) => {
     // save cloudinary link in database
     // return res
 
-    // console.log("Body",req.body)
     const { title, description } = req.body;
     if ([title, description].some((field) => field?.trim === "")) {
         throw new apiError(400, "All fields are required");
@@ -68,8 +68,8 @@ const publishVideo = asyncHandler(async (req, res) => {
     }
 
     let thumbnailLocalPath;
-    if (req.files && Array.isArray(req.files.thumbnail) && req.files.thumbnail.length > 0) {
-        thumbnailLocalPath = req.files.thumbnail[0].path;
+    if (req.file && Array.isArray(req.file.thumbnail) && req.file.thumbnail.length > 0) {
+        thumbnailLocalPath = req.file.thumbnail[0].path;
     }
 
     if (!thumbnailLocalPath) {
@@ -90,9 +90,7 @@ const publishVideo = asyncHandler(async (req, res) => {
 
     return res.status(200).json(new apiResponse(200, video, "Successfull"));
 });
-// TASK
-// thumbnail update remains
-// delete controller
+
 const updateVideo = asyncHandler(async (req, res) => {
     // get title and description from user
     // validate
@@ -111,10 +109,18 @@ const updateVideo = asyncHandler(async (req, res) => {
     }
     const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     const video = await Video.findById(req.params.videoId);
+    console.log("video", video)
 
     if (verifiedUser._id != video.owner) {
         throw new apiError(500, "You don't have permission");
     }
+
+    let thumbnailLocalPath = req.file?.path;
+    if (!thumbnailLocalPath) {
+        throw new apiError(400, "thumbnail file is required");
+    }
+    const deleteOldThumbnail = await deleteImageFromCloudinary(video.thumbnail)
+    const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
 
     const updatedVideo = await Video.findByIdAndUpdate(
         req.params.videoId,
@@ -122,6 +128,7 @@ const updateVideo = asyncHandler(async (req, res) => {
             $set: {
                 title,
                 description,
+                thumbnail: thumbnail.url
             },
         },
         { new: true }
@@ -133,43 +140,6 @@ const updateVideo = asyncHandler(async (req, res) => {
             new apiResponse(200, updatedVideo, "Title and Description are updated")
         );
 });
-
-// const updateThumbnail = asyncHandler(async(req,res)=>{
-//     const thumbnailLocalPath = req.file?.path
-//     if(!thumbnailLocalPath){
-//         throw new apiError(400, "Thumbnail file is required")
-//     }
-//     const token =req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
-
-//     if (!token) {
-//         throw new apiError(401, "Unauthorized request");
-//     }
-//     const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-//     const video = await Video.findById(req.params.videoId);
-
-//     if (verifiedUser._id != video.owner) {
-//         throw new apiError(500, "You don't have permission");
-//     }
-
-//     const deleteOldThumbnail = await deleteImageFromCloudinary(thumbnail)
-//     const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
-
-//     const updateThumbnail = await Video.findByIdAndUpdate(
-//         req.params.videoId,
-//         {
-//             $set: {
-//                 thumbnail: thumbnail.url
-//             }
-//         },
-//         {set: true}
-//     )
-
-//     return res
-//     .status(200)
-//     .json(
-//         new apiResponse(200, updateThumbnail, "Thumbnail updated successfully")
-//     )
-// })
 
 const getVideoById = asyncHandler(async(req,res)=>{
     // const {videoId} = req.params
@@ -187,7 +157,6 @@ const getVideoById = asyncHandler(async(req,res)=>{
     )
 })
 
-// not working
 const deleteVideo = asyncHandler(async(req,res)=>{
     const {videoId} = req.params
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
@@ -197,10 +166,14 @@ const deleteVideo = asyncHandler(async(req,res)=>{
     }
     const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     const video = await Video.findById(req.params.videoId);
+    console.log("Video" , video)
 
     if (verifiedUser._id != video.owner) {
         throw new apiError(500, "You don't have permission");
     }
+
+    const deletedVideoFromCloudinary = await deleteVideoFromCloudinary(video?.videoFile)
+    const deleteThumbnailFromCloudinary = await deleteImageFromCloudinary(video?.thumbnail)
 
     const deletedVideo = await Video.findByIdAndDelete(req.params.videoId)
 
@@ -239,5 +212,4 @@ export {
     getVideoById,
     deleteVideo,
     togglePublishStatus,
-    // updateThumbnail
 };

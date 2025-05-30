@@ -40,4 +40,13 @@ const deleteImageFromCloudinary = async(fileUrl) =>{
   }
 }
 
-export {uploadOnCloudinary, deleteImageFromCloudinary}
+const deleteVideoFromCloudinary = async(fileUrl) =>{
+  try {
+    const publicId = extractPublicId(fileUrl) 
+    const deleteResponse = await cloudinary.uploader.destroy(publicId,{resource_type: "video"})
+  } catch (error) {
+    throw new apiError(400, error?.message || "unable to delete image")
+  }
+}
+
+export {uploadOnCloudinary, deleteImageFromCloudinary, deleteVideoFromCloudinary}
