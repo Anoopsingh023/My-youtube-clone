@@ -6,6 +6,7 @@ import {apiResponse} from "../utils/apiResponse.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
+import { extractPublicId } from 'cloudinary-build-url'
 
 
 
@@ -319,8 +320,9 @@ const updateUserAvatar = asyncHandler(async(req,res)=>{
         throw new apiError(400, "Avatar file is missing")
     }
 
-    // const oldAvatar = await User.findById(req.user?._id)
-    // const deleteOldAvatarImage = await deleteImageFromCloudinary(oldAvatar?.avatar.url)
+
+    const oldAvatar = await User.findById(req.user?._id)
+    const deleteOldAvatarImage = await deleteImageFromCloudinary(oldAvatar?.avatar)
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
     if(!avatar.url){
@@ -352,7 +354,7 @@ const updateCoverImage = asyncHandler(async(req,res)=>{
     }
 
     const oldCoverImage = await User.findById(req.user?._id)
-    const deleteOldCoverImage = await deleteImageFromCloudinary(oldCoverImage?.coverImage?.url)
+    const deleteOldCoverImage = await deleteImageFromCloudinary(oldCoverImage?.coverImage)
 
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
     if(!coverImage.url){
