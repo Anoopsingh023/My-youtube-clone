@@ -7,7 +7,6 @@ import {
     uploadOnCloudinary,
     deleteVideoFromCloudinary
 } from "../utils/cloudinary.js";
-import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
 const getAllVideo = asyncHandler(async (req, res) => {
@@ -36,13 +35,20 @@ const getAllVideo = asyncHandler(async (req, res) => {
         .skip(parseInt(skip))
         .limit(parseInt(limit));
 
-    res.status(200).json({
-        success: true,
-        page: parseInt(page),
-        totalPages: Math.ceil(totalVideos / limit),
-        totalVideos,
-        videos,
-    });
+    return res
+    .status(200)
+    .json(
+        new apiResponse(
+            200,
+            {
+                page: parseInt(page),
+                totalPages: Math.ceil(totalVideos / limit),
+                totalVideos,
+                videos,
+            },
+            "All videos are fetched successfully"
+        )
+    )
 
 });
 

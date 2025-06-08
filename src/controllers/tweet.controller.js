@@ -6,6 +6,7 @@ import mongoose from "mongoose"
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken"
 
+
 const createTweet = asyncHandler(async(req, res)=>{
     // get tweet from body
     // validation

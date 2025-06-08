@@ -5,10 +5,6 @@ import {uploadOnCloudinary, deleteImageFromCloudinary} from "../utils/cloudinary
 import {apiResponse} from "../utils/apiResponse.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
-import { verifyJWT } from "../middlewares/auth.middleware.js"
-import { extractPublicId } from 'cloudinary-build-url'
-
-
 
 
 const generateAccessAndRefereshTokens = async(userId)=>{

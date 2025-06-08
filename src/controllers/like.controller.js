@@ -107,6 +107,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 }
 )
 
+// TODO: only liked video not tweets
 const getLikedVideos = asyncHandler(async (req, res) => {
     //TODO: get all liked videos
     const likedByVideos = await User.aggregate([
@@ -124,26 +125,37 @@ const getLikedVideos = asyncHandler(async (req, res) => {
                 pipeline: [
                     {
                         $lookup: {
-                            from: "users",
-                            localField: "likedBy",
+                            from: "videos",
+                            localField: "video",
                             foreignField: "_id",
-                            as: "likedBy",
+                            as: "video",
                             pipeline: [
                                 {
                                     $project: {
-                                        fullName: 1,
-                                        avatar: 1,
-                                        username: 1
+                                        videoFile: 1,
+                                        thumbnail: 1,
+                                        title: 1,
+                                        owner: 1
+                                    }
+                                },
+                                {
+                                    $lookup: {
+                                        from: "users",
+                                        localField: "owner",
+                                        foreignField: "_id",
+                                        as: "owner",
+                                        pipeline: [
+                                            {
+                                                $project: {
+                                                    fullName: 1,
+                                                    avatar: 1,
+                                                    username: 1
+                                                }
+                                            }
+                                        ]
                                     }
                                 }
                             ]
-                        }
-                    },
-                    {
-                        $addFields: {
-                            likedBy: {
-                                $first: "$likedBy"
-                            }
                         }
                     }
                 ]
