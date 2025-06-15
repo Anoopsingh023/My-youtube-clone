@@ -6,6 +6,7 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 import { Video } from "../models/video.model.js"
 import { User } from "../models/user.model.js"
 import { Tweet } from "../models/tweet.model.js"
+import {Comment } from "../models/comment.model.js"
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
     const {videoId} = req.params
@@ -40,7 +41,6 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     )
 })
 
-// TODO: testing
 const toggleCommentLike = asyncHandler(async (req, res) => {
     const {commentId} = req.params
     //TODO: toggle like on comment
@@ -53,8 +53,8 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
 
     if(!alreadyLiked?.length){
         const likeComment = await Like.create({
-            comment,
-            likedBy
+            comment: comment._id,
+            likedBy: likedBy._id
         })
 
         return res
