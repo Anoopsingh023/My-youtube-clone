@@ -43,7 +43,7 @@ function Signup() {
       .then((res) => {
         console.log(res.data);
         setLoading(false);
-        // navigate("/login")
+        navigate("/login")
         toast(res.data.message);
       })
       .catch((error) => {
@@ -57,7 +57,7 @@ function Signup() {
   return (
     <>
       <div className="flex justify-center items-center h-screen w-full bg-black-300">
-        <div className="flex flex-col justify-center items-center gap-4  w-2xl shadow-xl bg-gray-500 py-10">
+        <div className="flex flex-col justify-center items-center gap-4  w-2xl shadow-xl shadow-gray-700 bg-gray-500 py-10">
           <div className="flex gap-3 justify-center items-center">
             <img className="w-20 h-15" src="../img/logo.jpg" alt="logo" />
             <h2 className="text-2xl text-white">My YouTube</h2>
