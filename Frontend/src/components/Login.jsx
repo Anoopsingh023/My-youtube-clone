@@ -27,6 +27,9 @@ function Login() {
         localStorage.setItem("userId", res.data.data.user._id);
         localStorage.setItem("userName", res.data.data.user.username);
         localStorage.setItem("avatar", res.data.data.user.avatar);
+        localStorage.setItem("coverImage", res.data.data.user.coverImage);
+        localStorage.setItem("name", res.data.data.user.fullName);
+
         // toast(res.data.message)
         toast("Welcome to my youtube");
       })
