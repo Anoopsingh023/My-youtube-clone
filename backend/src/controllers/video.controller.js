@@ -2,12 +2,15 @@ import { apiError } from "../utils/apiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { Video } from "../models/video.model.js";
+import { User } from "../models/user.model.js";
 import {
     deleteImageFromCloudinary,
     uploadOnCloudinary,
     deleteVideoFromCloudinary
 } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+
 
 const getAllVideo = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, query, sortBy = "createdAt", sortType = "desc", userId } = req.query;
@@ -30,7 +33,7 @@ const getAllVideo = asyncHandler(async (req, res) => {
     }
 
     const totalVideos = await Video.countDocuments(filter);
-    const videos = await Video.find(filter)
+    const videos = await Video.find(filter).populate("owner","username fullName avatar")
         .sort(sortOption)
         .skip(parseInt(skip))
         .limit(parseInt(limit));
@@ -84,7 +87,8 @@ const publishVideo = asyncHandler(async (req, res) => {
 
     const videoFile = await uploadOnCloudinary(videoLocalPath);
     const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
-    // console.log(req.user)
+
+    console.log(req.user)
 
     const video = await Video.create({
         title,
@@ -94,7 +98,7 @@ const publishVideo = asyncHandler(async (req, res) => {
         owner: req.user._id,
     });
 
-    return res.status(200).json(new apiResponse(200, video, "Successfull"));
+    return res.status(200).json(new apiResponse(200, video, "Video uploaded Successfully"));
 });
 
 const updateVideo = asyncHandler(async (req, res) => {
@@ -163,6 +167,64 @@ const getVideoById = asyncHandler(async(req,res)=>{
     )
 })
 
+const getUserVideos = asyncHandler(async(req,res)=>{
+    const {userId} = req.params
+
+    const userVideos = await User.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(req.params.userId)
+            }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "_id",
+                foreignField: "owner",
+                as: "video",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "owner",
+                            foreignField: "_id",
+                            as: "owner",
+                            pipeline: [
+                                {
+                                    $project: {
+                                        fullName: 1,
+                                        avatar: 1,
+                                        username: 1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        $addFields: {
+                            owner: {
+                                $first: "$owner"
+                            }
+                        }
+                    },
+                    
+                ]
+            }
+        },
+        {
+            $project: {
+                video: 1,
+            }
+        }
+    ])
+
+    return res
+    .status(200)
+    .json(
+        new apiResponse(200,userVideos, "All videos are fetched successfully")
+    )
+})
+
 const deleteVideo = asyncHandler(async(req,res)=>{
     const {videoId} = req.params
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
@@ -218,4 +280,5 @@ export {
     getVideoById,
     deleteVideo,
     togglePublishStatus,
+    getUserVideos,
 };

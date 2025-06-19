@@ -68,20 +68,24 @@ const getSubscribedChannels = asyncHandler(async(req,res)=>{
                                 }
                             ]
                         }
+                    },
+                    {
+                        $addFields: {
+                            channel: {
+                                $first: "$channel"
+                            }
+                        }
                     }
                 ]
             }
         },
         {
-            $addFields: {
-                subscribedChannel: {
-                    $first: "$subscribedChannel"
-                }
-            }
-        },
-        {
             $project: {
-                subscribedChannel: 1
+                fullName: 1,
+                avatar: 1,
+                username: 1,
+                subscribedChannel: 1,
+                channel: 1
             }
         }
     ])
@@ -89,7 +93,7 @@ const getSubscribedChannels = asyncHandler(async(req,res)=>{
     return res
     .status(200)
     .json(
-        new apiResponse(200,subscribedChannels[0].subscribedChannel.channel, "Subscribed channel is fetched successfully")
+        new apiResponse(200,subscribedChannels, "Subscribed channel is fetched successfully")
     )
 })
 
@@ -106,14 +110,14 @@ const getUserChannelSubscribers = asyncHandler(async(req,res)=>{
                 from: "subscriptions",
                 localField: "_id",
                 foreignField: "channel",
-                as: "subscriber",
+                as: "subscribers",
                 pipeline: [
                     {
                         $lookup: {
                             from: "users",
                             localField: "subscriber",
                             foreignField: "_id",
-                            as: "user",
+                            as: "subscriber",
                             pipeline: [
                                 {
                                     $project: {
@@ -124,29 +128,34 @@ const getUserChannelSubscribers = asyncHandler(async(req,res)=>{
                                 }
                             ]
                         }
+                    },
+                    {
+                        $addFields: {
+                            subscriber: {
+                                $first: "$subscriber"
+                            }
+                        }
                     }
                 ]
             }
         },
-        {
-            $addFields: {
-                subscriber: {
-                    $first: "$subscriber"
-                }
-            }
-        },
+        
         {
             $project: {
+                username: 1,
+                fullName: 1,
+                avatar: 1,
+                subscribers: 1,
                 subscriber: 1
             }
         }
     ])
-    console.log("Channel",subscribers[0].subscriber.user)
+    // console.log("Channel",subscribers)
 
     return res
     .status(200)
     .json(
-        new apiResponse(200, subscribers[0].subscriber.user, "Subscribers are fetched successfully")
+        new apiResponse(200, subscribers, "Subscribers are fetched successfully")
     )
     
 })
