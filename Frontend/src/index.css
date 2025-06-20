@@ -10,3 +10,36 @@ body{
     background: #353232be;
 
 }
+@layer utilities {
+    /* For Chrome, Edge, Safari */
+.scrollbar-hover::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-hover::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.4); /* optional styling */
+  border-radius: 4px;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.scrollbar-hover:hover::-webkit-scrollbar-thumb {
+  opacity: 1;
+}
+
+/* Firefox */
+.scrollbar-hover {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+}
+
+.scrollbar-hover:not(:hover) {
+  scrollbar-color: transparent transparent;
+}
+
+    
+}
