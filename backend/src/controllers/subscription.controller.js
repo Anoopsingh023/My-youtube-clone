@@ -6,36 +6,33 @@ import mongoose from "mongoose";
 import { User } from "../models/user.model.js";
 
 
-const toggleSubscription = asyncHandler(async(req,res)=>{
+const toggleSubscription = asyncHandler(async (req, res) => {
+  const channelId = req.params.channelId;
+  const subscriberId = req.user._id;
 
-    const channel = await User.findById(req.params.channelId)
-    const subscriber = await User.findById(req.user._id)
+  const existingSubscription = await Subscription.findOne({
+    channel: channelId,
+    subscriber: subscriberId
+  });
 
-    const channelExist = await Subscription.find({
-        $and: [{channel},{subscriber}]
-    })
+  if (!existingSubscription) {
+    const newSubscription = await Subscription.create({
+      channel: channelId,
+      subscriber: subscriberId
+    });
 
-    if(!channelExist?.length){ 
-        const subscription = await Subscription.create({
-            channel,
-            subscriber
-        })
-        
-        return res
-        .status(200)
-        .json(
-            new apiResponse(200,subscription, "Channel is subscribed")
-        )
-    }
+    return res.status(200).json(
+      new apiResponse(200, newSubscription, "Channel is subscribed")
+    );
+  }
 
-    const unSubscribe = await Subscription.deleteOne(channelExist._id)
+  await Subscription.deleteOne({ _id: existingSubscription._id });
 
-    return res
-    .status(200)
-    .json(
-        new apiResponse(200, {unSubscribe: channelExist},"Channel is unsubscribed")
-    )
-})
+  return res.status(200).json(
+    new apiResponse(200, null, "Channel is unsubscribed")
+  );
+});
+
 
 const getSubscribedChannels = asyncHandler(async(req,res)=>{
     const {subscriberId} = req.params
