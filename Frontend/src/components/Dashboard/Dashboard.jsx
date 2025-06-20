@@ -1,9 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate()
 
   const [subscribedChannels, setSubscribedChannel] = useState([]);
 
@@ -24,7 +25,7 @@ const Dashboard = () => {
         }
       )
       .then((res) => {
-        console.log(res.data);
+        console.log("subscribed channels by user",res.data);
         const userData = res.data?.data?.[0]; // null-safe access
         const channels = userData?.subscribedChannel || []; // fallback to empty array
         setSubscribedChannel(channels);
@@ -34,11 +35,14 @@ const Dashboard = () => {
       });
   };
 
-  useEffect(() => {
-    if (subscribedChannels.length > 0) {
-    }
-    console.log("Updated channel state", subscribedChannels);
-  }, [subscribedChannels]);
+
+  const handleProfileClick = ()=>{
+    navigate(`/dashboard/${localStorage.getItem("userName")}`)
+  }
+
+  const handleChannelClick = (userName)=>{
+    navigate(`/dashboard/${userName}`)
+  }
 
   return (
     <div className="flex flex-col">
@@ -62,7 +66,8 @@ const Dashboard = () => {
           </button>
         </form>
         <img
-          className="h-12 rounded-4xl w-12"
+          onClick={handleProfileClick}
+          className="h-12 rounded-4xl w-12 cursor-pointer"
           src={localStorage.getItem("avatar")}
           alt=""
         />
@@ -145,6 +150,7 @@ const Dashboard = () => {
             >
               <i class="fa-solid fa-video mr-5"></i> your Video
             </Link>
+
             <Link
               to={"/dashboard/my-video"}
               className={`${
@@ -155,6 +161,7 @@ const Dashboard = () => {
             >
               <i class="fa-solid fa-graduation-cap mr-5"></i> your Cources
             </Link>
+
             <Link
               to={"/dashboard/my-video"}
               className={`${
@@ -165,6 +172,7 @@ const Dashboard = () => {
             >
               <i class="fa-regular fa-clock mr-5"></i> Watch Later
             </Link>
+
             <Link
               to={"/dashboard/my-video"}
               className={`${
@@ -188,7 +196,7 @@ const Dashboard = () => {
             </Link>
 
             <Link
-            to={"/dashboard/logout"}
+              to={"/dashboard/logout"}
               className={`${
                 location.pathname === "/dashboard/logout"
                   ? "bg-[#3b3b3b] "
@@ -201,16 +209,30 @@ const Dashboard = () => {
             <hr className="text-[#3b3b3b] w-[100%] m-3" />
             <h2 className="mx-4 my-1">Subscriptions</h2>
 
-            <div >
-              {subscribedChannels.map((subscribedChannel)=>(
-              <div className="flex flex-row items-center hover:bg-[#3b3b3b] w-[90%] py-2 duration-300 rounded-xl cursor-pointer" key={subscribedChannel._id}>
-                <img className="h-7 w-7 object-cover rounded-xl  mx-5" src={subscribedChannel.channel.avatar} alt="avatar" />
-                <h2>{subscribedChannel.channel.fullName}</h2>
-              </div>
-            ))}</div>
+            <div>
+              {subscribedChannels.map((subscribedChannel) => (
+                <div 
+                  onClick={()=>{handleChannelClick(subscribedChannel.channel.username)}}
+                  className="flex flex-row items-center hover:bg-[#3b3b3b] w-[90%] py-2 duration-300 rounded-xl cursor-pointer"
+                  key={subscribedChannel._id}
+                >
+                  <img
+                  onClick={()=>{handleChannelClick(subscribedChannel.channel.username)}}
+                    className="h-7 w-7 object-cover rounded-xl  mx-5"
+                    src={subscribedChannel.channel.avatar}
+                    alt="avatar"
+                  />
+                  <h2 onClick={()=>{handleChannelClick(subscribedChannel.channel.username)}}>{subscribedChannel.channel.fullName}</h2>
+                </div>
+              ))}
+            </div>
 
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt, enim excepturi corporis distinctio perferendis minima sapiente aspernatur provident? Consectetur esse minima incidunt repellat, dolor earum perspiciatis. Exercitationem quis voluptatem suscipit.</p>
-
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt,
+              enim excepturi corporis distinctio perferendis minima sapiente
+              aspernatur provident? Consectetur esse minima incidunt repellat,
+              dolor earum perspiciatis. Exercitationem quis voluptatem suscipit.
+            </p>
           </div>
         </div>
 
