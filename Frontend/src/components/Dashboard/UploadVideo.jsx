@@ -52,7 +52,7 @@ const UploadVideo = () => {
     <div className="flex flex-col justify-center items-center ">
       <h2 className="text-white my-5 text-3xl font-bold">Upload Video</h2>
       <form
-      onSubmit={submitHandler}
+        onSubmit={submitHandler}
         action=""
         className="flex flex-col gap-3 w-[70%] p-10 bg-[#343434] shadow-lg shadow-[#737272]  "
       >
