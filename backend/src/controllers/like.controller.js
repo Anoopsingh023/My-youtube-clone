@@ -9,20 +9,23 @@ import { Tweet } from "../models/tweet.model.js"
 import {Comment } from "../models/comment.model.js"
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
-    const {videoId} = req.params
+    const videoId = req.params.videoId
     //TODO: toggle like on video
+    const likedById = req.user._id
     const video = await Video.findById(req.params.videoId)
-    const likedBy = await User.findById(req.user._id)
+    if(!video){
+        throw new apiError(400,"Video is not available")
+    }
 
-
-    const alreadyLiked = await Like.find({
-        $and: [{video},{likedBy}]
+    const alreadyLiked = await Like.findOne({
+        video: videoId,
+        likedBy: likedById,
     })
 
-    if(!alreadyLiked?.length){
+    if(!alreadyLiked){
         const likeVideo = await Like.create({
-            video,
-            likedBy
+            video: videoId,
+            likedBy: likedById
         })
 
         return res
@@ -32,29 +35,32 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
         )
     }
 
-    const unlikeVideo = await Like.findByIdAndDelete(alreadyLiked[0]._id)
+    const unlikeVideo = await Like.deleteOne({_id: alreadyLiked._id})
 
     return res
     .status(200)
     .json(
-        new apiResponse(200, {unlikeVideo: alreadyLiked}, "video is unliked")
+        new apiResponse(200, null, "video is unliked")
     )
 })
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
-    const {commentId} = req.params
+    const commentId = req.params.commentId
+    const likedById = req.user._id
+    
     //TODO: toggle like on comment
     const comment = await Comment.findById(req.params.commentId)
     const likedBy = await User.findById(req.user._id)
 
-    const alreadyLiked = await Like.find({
-        $and: [{comment},{likedBy}]
+    const alreadyLiked = await Like.findOne({
+        comment: commentId,
+        likedBy: likedById
     })
 
-    if(!alreadyLiked?.length){
+    if(!alreadyLiked){
         const likeComment = await Like.create({
-            comment: comment._id,
-            likedBy: likedBy._id
+            comment: commentId,
+            likedBy: likedById
         })
 
         return res
@@ -64,30 +70,31 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
         )
     }
 
-    const unlikeComment = await Like.findByIdAndDelete(alreadyLiked[0]._id)
+    const unlikeComment = await Like.deleteOne({_id:alreadyLiked._id})
 
     return res
     .status(200)
     .json(
-        new apiResponse(200, {unlikeComment: alreadyLiked}, "Comment is unliked")
+        new apiResponse(200,null, "Comment is unliked")
     )
 
 })
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
-    const {tweetId} = req.params
+    const {tweetId} = req.params.tweetId
     //TODO: toggle like on tweet
     const tweet = await Tweet.findById(req.params.tweetId)
     const likedBy = await User.findById(req.user._id)
 
-    const alreadyLiked = await Like.find({
-        $and: [{tweet},{likedBy}]
+    const alreadyLiked = await Like.findOne({
+        tweet: tweetId,
+        likedBy: likedBy._id
     })
 
-    if(!alreadyLiked?.length){
+    if(!alreadyLiked){
         const likeTweet = await Like.create({
-            tweet,
-            likedBy
+            tweet: tweetId,
+            likedBy: likedBy._id
         })
 
         return res
@@ -97,79 +104,125 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
         )
     }
 
-    const unliketweet = await Like.findByIdAndDelete(alreadyLiked[0]._id)
+    const unliketweet = await Like.deleteOne({_id:alreadyLiked._id})
 
     return res
     .status(200)
     .json(
-        new apiResponse(200, {unliketweet: alreadyLiked}, "tweet is unliked")
+        new apiResponse(200,null, "tweet is unliked")
     )
 }
 )
 
-// TODO: only liked video not tweets
 const getLikedVideos = asyncHandler(async (req, res) => {
-    //TODO: get all liked videos
-    const likedByVideos = await User.aggregate([
-        {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const userId = new mongoose.Types.ObjectId(req.user._id);
+
+  // 1️⃣ Get total liked videos count
+  const totalLikedVideoResult = await Like.aggregate([
+    {
+      $match: {
+        likedBy: userId,
+        video: { $ne: null }
+      }
+    },
+    {
+      $count: "total"
+    }
+  ]);
+
+  const totalLikedVideos = totalLikedVideoResult[0]?.total || 0;
+
+  // 2️⃣ Get paginated liked videos with info
+  const likedByVideos = await User.aggregate([
+    {
+      $match: { _id: userId }
+    },
+    {
+      $lookup: {
+        from: "likes",
+        let: { userId: "$_id" },
+        pipeline: [
+          {
             $match: {
-                _id: new mongoose.Types.ObjectId(req.user._id)
-            }
-        },
-        {
-            $lookup: {
-                from: "likes",
-                localField: "_id",
-                foreignField: "likedBy",
-                as: "likedVideos",
-                pipeline: [
-                    {
-                        $lookup: {
-                            from: "videos",
-                            localField: "video",
-                            foreignField: "_id",
-                            as: "video",
-                            pipeline: [
-                                {
-                                    $project: {
-                                        videoFile: 1,
-                                        thumbnail: 1,
-                                        title: 1,
-                                        owner: 1
-                                    }
-                                },
-                                {
-                                    $lookup: {
-                                        from: "users",
-                                        localField: "owner",
-                                        foreignField: "_id",
-                                        as: "owner",
-                                        pipeline: [
-                                            {
-                                                $project: {
-                                                    fullName: 1,
-                                                    avatar: 1,
-                                                    username: 1
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
-                    }
+              $expr: {
+                $and: [
+                  { $eq: ["$likedBy", "$$userId"] },
+                  { $ne: ["$video", null] }
                 ]
+              }
             }
-        }
-    ])
+          },
+          { $sort: { createdAt: -1 } },
+          { $skip: skip },
+          { $limit: limit },
+          {
+            $lookup: {
+              from: "videos",
+              localField: "video",
+              foreignField: "_id",
+              as: "video",
+              pipeline: [
+                {
+                  $project: {
+                    videoFile: 1,
+                    thumbnail: 1,
+                    title: 1,
+                    owner: 1
+                  }
+                },
+                {
+                  $lookup: {
+                    from: "users",
+                    localField: "owner",
+                    foreignField: "_id",
+                    as: "owner",
+                    pipeline: [
+                      {
+                        $project: {
+                          fullName: 1,
+                          avatar: 1,
+                          username: 1
+                        }
+                      }
+                    ]
+                  }
+                },
+                { $unwind: "$owner" }
+              ]
+            }
+          },
+          { $unwind: "$video" },
+          {
+            $project: {
+              likedAt: "$createdAt",
+              video: 1
+            }
+          }
+        ],
+        as: "likedVideos"
+      }
+    }
+  ]);
 
-    return res
-    .status(200)
-    .json(
-        new apiResponse(200, likedByVideos[0].likedVideos,"All liked videos are fetched successfully")
+  // 3️⃣ Return response with pagination
+  return res.status(200).json(
+    new apiResponse(
+      200,
+      {
+        totalLikedVideos,
+        currentPage: page,
+        totalPages: Math.ceil(totalLikedVideos / limit),
+        likedVideos: likedByVideos[0]?.likedVideos || []
+      },
+      "Liked videos fetched successfully"
     )
+  );
+});
 
-})
 
 export {
     toggleCommentLike,
