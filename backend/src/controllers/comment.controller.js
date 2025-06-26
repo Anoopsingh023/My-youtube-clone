@@ -20,7 +20,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
     }
 
     const totalComment = await Comment.countDocuments(filter)
-    const comments = await Comment.find(filter)
+    const comments = await Comment.find(filter).populate("owner", "username avatar fullName")
     .skip(parseInt(skip))
     .limit(parseInt(limit))
 
