@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useLocation, useParams, useNavigate,  } from "react-router-dom";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
+import moment from 'moment';
 
 const ChannelProfile = () => {
   const { username } = useParams();
   const [videos, setVideos] = useState([]);
   const [user, setUser] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     getChannelProfile();
   }, [username]);
 
-  const getVideo = (userId) => {
+  const getuserVideo = (userId) => {
     axios
       .get(`http://localhost:8000/api/v1/videos/u/${userId}`, {
         headers: {
@@ -23,7 +24,7 @@ const ChannelProfile = () => {
         console.log("Channel's videos", res.data);
         const videoData = res.data?.data?.[0]; // null-safe access
         const video = videoData?.video || []; // fallback to empty array
-        setVideos(video);
+        setVideos(video.reverse());
       })
       .catch((err) => {
         console.log(err);
@@ -41,7 +42,7 @@ const ChannelProfile = () => {
         console.log("Channel Profile", res.data);
         const userData = res.data.data;
         setUser(res.data.data);
-        getVideo(userData._id);
+        getuserVideo(userData._id);
       })
       .catch((err) => {
         console.log(err);
@@ -73,16 +74,15 @@ const ChannelProfile = () => {
   };
 
   const handleVideoClick = (video) => {
-    navigate("/dashboard/video-page", {state: {video}})
-  }
-
+    navigate("/dashboard/video-page", { state: { video } });
+  };
 
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex flex-col">
         <img
           className="h-35 m-5 mb-0 text-white object-cover"
-          src={(user.coverImage) || null }
+          src={user.coverImage || null}
           alt="cover image"
         />
         <div className="flex flex-row m-5 p-3 items-center">
@@ -132,7 +132,7 @@ const ChannelProfile = () => {
       <div className="grid grid-cols-3 gap-x-2 h-fit items-start p-5 pb-40">
         {videos.map((video) => (
           <div
-            onClick={()=>handleVideoClick(video)}
+            onClick={() => handleVideoClick(video)}
             key={video._id}
             className="  p-2 text-white cursor-pointer rounded-2xl hover:bg-[#abaaaa27] duration-600"
           >
@@ -147,14 +147,13 @@ const ChannelProfile = () => {
               <div className="flex flex-row gap-1 items-center text-[#6e6e6e] ">
                 <h2>{video.views} views</h2>
                 <p className="">&#x2022;</p>
-                <p>7 months</p>
+                <p>{moment(video.createdAt).fromNow()}</p>
               </div>
               {/* </div> */}
             </div>
           </div>
         ))}
       </div>
-      
     </div>
   );
 };
