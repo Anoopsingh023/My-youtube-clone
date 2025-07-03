@@ -5,7 +5,8 @@ import { getAllVideo,
     getVideoById,
     togglePublishStatus,
     deleteVideo,
-    getUserVideos
+    getUserVideos,
+    getTotalViewsOnVideo
 } from "../controllers/video.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -13,6 +14,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = Router()
 
 router.route("/").get(getAllVideo)
+router.route("/views/:videoId").put(getTotalViewsOnVideo)
 
 router.use(verifyJWT)
 
