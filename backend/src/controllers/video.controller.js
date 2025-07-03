@@ -277,10 +277,8 @@ const getTotalViewsOnVideo = asyncHandler(async(req,res)=>{
     const {videoId} = req.params
 
     const video = await Video.findById(req.params.videoId)
-    console.log("Video Views", video)
     video.views+=1
     await video.save()
-    console.log("Video Views", video)
 
     return res
     .status(200)
