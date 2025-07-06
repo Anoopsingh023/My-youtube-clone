@@ -25,31 +25,45 @@ const createPlaylist = asyncHandler(async(req,res)=>{
     )
 })
 
-const getUserPlaylists = asyncHandler(async (req, res) => {
-    const {userId} = req.params
-    //TODO: get user playlists
-    const playlist = await User.aggregate([
-        {
-            $match: {
-                _id: new mongoose.Types.ObjectId(req.params.userId)
-            }
-        },
-        {
-            $lookup: {
-                from: "playlists",
-                localField: "_id",
-                foreignField: "owner",
-                as: "allplaylist"
-            }
-        },
-    ])
+// const getUserPlaylists = asyncHandler(async (req, res) => {
+//     const {userId} = req.params
+//     //TODO: get user playlists
+//     const playlist = await User.aggregate([
+//         {
+//             $match: {
+//                 _id: new mongoose.Types.ObjectId(req.params.userId)
+//             }
+//         },
+//         {
+//             $lookup: {
+//                 from: "playlists",
+//                 localField: "_id",
+//                 foreignField: "owner",
+//                 as: "allplaylist"
+//             }
+//         },
+//     ])
 
-    return res
+//     return res
+//     .status(200)
+//     .json(
+//         new apiResponse(200, playlist[0].allplaylist,"User playlist fetched successfully")
+//     )
+// })
+
+const getUserPlaylists = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json(new apiResponse(400, null, "Invalid user ID"));
+  }
+
+  const playlists = await Playlist.find({ owner: userId }).populate("videos","thumbnail title views");
+
+  return res
     .status(200)
-    .json(
-        new apiResponse(200, playlist[0].allplaylist,"User playlist fetched successfully")
-    )
-})
+    .json(new apiResponse(200, playlists, "User playlists fetched successfully"));
+});
 
 const getPlaylistById = asyncHandler(async (req, res) => {
     const {playlistId} = req.params
