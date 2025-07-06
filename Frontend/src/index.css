@@ -15,6 +15,10 @@ body{
 .scrollbar-hover::-webkit-scrollbar {
   width: 8px;
 }
+.scrollbar::-webkit-scrollbar {
+  scrollbar-color: transparent transparent;
+
+}
 
 .scrollbar-hover::-webkit-scrollbar-track {
   background: transparent;
@@ -41,5 +45,18 @@ body{
   scrollbar-color: transparent transparent;
 }
 
+/* Tailwind-compatible scrollbar-hide */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+
+
     
 }
+
