@@ -2,13 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Navbar = ({ isEnabled , onSearch}) => {
+const Navbar = ({ isEnabled , onSearch,onToggleSidebar}) => {
   const navigate = useNavigate();
-  const [subscribedChannels, setSubscribedChannel] = useState([]);
   const [logedin, setLogedin] = useState(false);
 
   useEffect(() => {
-    getSubscribedChannel();
     if (localStorage.getItem("token")) {
       setLogedin(true);
     }
@@ -18,7 +16,6 @@ const Navbar = ({ isEnabled , onSearch}) => {
   const menus = ["Your Channel", "Theme", "Help", "Send feedback", "Logout"];
   const [open, setOpen] = useState(false);
 
-  // const [open, setOpen] = useState(false);
   const dropdownRef = useRef();
 
   useEffect(() => {
@@ -33,29 +30,6 @@ const Navbar = ({ isEnabled , onSearch}) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  const getSubscribedChannel = () => {
-    axios
-      .get(
-        `http://localhost:8000/api/v1/subscriptions/u/${localStorage.getItem(
-          "userId"
-        )}`,
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((res) => {
-        console.log("subscribed channels by user", res.data);
-        const userData = res.data?.data?.[0]; // null-safe access
-        const channels = userData?.subscribedChannel || []; // fallback to empty array
-        setSubscribedChannel(channels);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   const logout = () => {
     axios
@@ -108,9 +82,10 @@ const Navbar = ({ isEnabled , onSearch}) => {
 
   return (
     <>
-      <nav className="flex flex-row sticky items-center justify-between px-10  p-3  text-white font-bold ">
+      <nav className="flex flex-row sticky items-center justify-between px-5  py-3  mr-5 text-white font-bold ">
         <div className="flex flex-row gap-2 items-center">
-          {/* <i className="fa-solid fa-bars "></i> */}
+          <i onClick={onToggleSidebar} className="fa-solid fa-bars hover:bg-[#3b3b3b] p-3 cursor-pointer rounded-full"></i>
+          
           <img
             className="h-12 p-2 rounded-2xl "
             src="../../src/assets/logo.jpg"

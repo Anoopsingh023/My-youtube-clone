@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
-import { useRandomVideos } from "../context/UserVideoContext";
+import { useRandomVideos } from "../context/VideoContext";
 
 const Video = () => {
   const navigate = useNavigate()
