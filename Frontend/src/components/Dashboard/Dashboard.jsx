@@ -20,11 +20,12 @@ import { base_url } from "../../utils/constant";
 const Dashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const userId = localStorage.getItem("userId")
   const { videos, loading, error } = useRandomVideo();
-  const { userVideo } = useUserVideos();
+  const { userVideo } = useUserVideos(userId);
   // const {subscribedChannels} = useSubscription()
   // console.log("subscribed channel on dashboard", subscribedChannels)
-  const { playlists } = useUserPlaylist();
+  const { playlists } = useUserPlaylist(userId);
   // console.log("Playlist on profile", playlists)
 
   const [searchQuery, setSearchQuery] = useState("");
