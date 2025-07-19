@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { base_url } from "../../utils/constant";
 
 const useRandomVideos = () => {
   const [videos, setVideos] = useState([]);
@@ -10,7 +11,7 @@ const useRandomVideos = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://localhost:8000/api/v1/videos`,
+        `${base_url}/api/v1/videos`,
         {
           headers: {
            

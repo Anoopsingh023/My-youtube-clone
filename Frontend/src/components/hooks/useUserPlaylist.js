@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { base_url } from "../../utils/constant";
 
 const useUserPlaylist = (userId) => {
   const [playlists, setPlaylists] = useState([]);
 
   const fetchAllPlaylist = () => {
     axios
-      .get(`http://localhost:8000/api/v1/playlists/user/${userId}`, {
+      .get(`${base_url}/api/v1/playlists/user/${userId}`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -24,7 +25,7 @@ const useUserPlaylist = (userId) => {
   const handleCreateplaylist = (name, description) => {
     axios
       .post(
-        `http://localhost:8000/api/v1/playlists/create`,
+        `${base_url}/api/v1/playlists/create`,
         {
           name: name,
           description: description,

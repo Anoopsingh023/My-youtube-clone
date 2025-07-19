@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { base_url } from "../utils/constant";
 
 function Login() {
   const [password, setPassword] = useState("");
@@ -15,7 +16,7 @@ function Login() {
     setLoading(true);
 
     axios
-      .post("http://localhost:8000/api/v1/users/login", {
+      .post(`${base_url}/api/v1/users/login`, {
         email: email,
         password: password,
       })
@@ -39,7 +40,6 @@ function Login() {
         toast.error("Invalid email or password");
       });
   };
-  //  http://localhost:8000/api/v1/users/register
 
   return (
     <>

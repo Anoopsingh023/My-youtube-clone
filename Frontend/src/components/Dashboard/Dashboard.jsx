@@ -8,26 +8,30 @@ import {
   useNavigate,
 } from "react-router-dom";
 import Navbar from "../Navbar";
-import {  VideoContext } from "../context/VideoContext";
+import { VideoContext } from "../context/VideoContext";
 import useFilteredSortedVideos from "../hooks/useFilteredSortedVideos";
 import useRandomVideo from "../hooks/useRandomVideo";
 import Sidebar from "./Sidebar";
 import useSubscription from "../hooks/useSubscription";
 import useUserPlaylist from "../hooks/useUserPlaylist";
+import useUserVideos from "../hooks/useUserVideos";
+import { base_url } from "../../utils/constant";
 
 const Dashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { videos, loading, error } = useRandomVideo();
-  const {subscribedChannels} = useSubscription()
-  const {playlists} = useUserPlaylist()
+  const { userVideo } = useUserVideos();
+  // const {subscribedChannels} = useSubscription()
+  // console.log("subscribed channel on dashboard", subscribedChannels)
+  const { playlists } = useUserPlaylist();
   // console.log("Playlist on profile", playlists)
 
   const [searchQuery, setSearchQuery] = useState("");
 
   // const [subscribedChannels, setSubscribedChannel] = useState([]);
   const [logedin, setLogedin] = useState(false);
-  const [isSidebarVisible, setSidebarVisible] = useState(true)
+  const [isSidebarVisible, setSidebarVisible] = useState(true);
 
   const toggleSidebar1 = () => {
     setSidebarVisible(!isSidebarVisible);
@@ -39,19 +43,17 @@ const Dashboard = () => {
     setSidebarCollapsed((prev) => !prev);
   };
 
-  useEffect(() => {
-    getSubscribedChannel();
-    if (localStorage.getItem("token")) {
-      setLogedin(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   getSubscribedChannel();
+  //   if (localStorage.getItem("token")) {
+  //     setLogedin(true);
+  //   }
+  // }, []);
 
   const getSubscribedChannel = () => {
     axios
       .get(
-        `http://localhost:8000/api/v1/subscriptions/u/${localStorage.getItem(
-          "userId"
-        )}`,
+        `${base_url}/api/v1/subscriptions/u/${localStorage.getItem("userId")}`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -69,41 +71,15 @@ const Dashboard = () => {
       });
   };
 
-  const logout = () => {
-    axios
-      .post(
-        `http://localhost:8000/api/v1/users/logout`,
-        {},
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((res) => {
-        console.log("logout", res.data);
-        ["token", "userId", "userName", "avatar", "coverImage", "name"].forEach(
-          (item) => localStorage.removeItem(item)
-        );
-        setLogedin(false);
-        setSubscribedChannel([]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  
-
   const { filteredVideos, handleSort, sortKey, sortOrder } =
     useFilteredSortedVideos(videos, searchQuery);
 
   return (
-    <VideoContext.Provider value={{ filteredVideos, subscribedChannels, playlists }}>
+    <VideoContext.Provider value={{ filteredVideos, playlists, userVideo }}>
       <div className="flex flex-col h-screen">
         {/* Navbar */}
         <div className="bg-black shadow-2xl">
-          <Navbar onSearch={setSearchQuery} onToggleSidebar={toggleSidebar}/>
+          <Navbar onSearch={setSearchQuery} onToggleSidebar={toggleSidebar} />
         </div>
 
         {/* Sidebar + Content */}
@@ -111,12 +87,12 @@ const Dashboard = () => {
           {/* Sidebar */}
 
           <div
-          className={`${
-            isSidebarCollapsed ? "w-20" : "w-64"
-          } bg-black overflow-y-auto scrollbar-hover pb-40 text-[#ece9e9]  `}
-        >
-          <Sidebar isCollapsed={isSidebarCollapsed} />
-        </div>
+            className={`${
+              isSidebarCollapsed ? "w-20" : "w-64"
+            } bg-black overflow-y-auto scrollbar-hover pb-40 text-[#ece9e9]  `}
+          >
+            <Sidebar isCollapsed={isSidebarCollapsed} />
+          </div>
 
           {/* Main Content */}
           <div className="flex-1 bg-black overflow-y-auto scrollbar-hover">

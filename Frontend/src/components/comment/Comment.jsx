@@ -1,44 +1,62 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
+import {base_url} from "../../utils/constant"
 
 const Comment = (video) => {
   const [comments, setComments] = useState([]);
+  const [totalComment, setTotalComment] = useState("");
   const [content, setContent] = useState("");
   const [sortBy, setSortBy] = useState("des");
+  const [isLikedByUser, setIsLikedByUser] = useState(false);
+  const [likedComments, setLikedComments] = useState("");
 
-  useEffect(() => {
+ useEffect(() => {
+  if (video?.message?._id) {
     getVideoComments();
-  }, [sortBy,video.message._id]);
+  }
+}, [video?.message?._id, sortBy]);
 
   const getVideoComments = () => {
-    axios
-      .get(`http://localhost:8000/api/v1/comments/${video.message._id}`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        console.log("Video Comments", res.data.data.comments);
-        if(sortBy == "asc"){
-            setComments(res.data.data.comments)
-        }
-        else{
-            setComments(res.data.data.comments.reverse());
-        }
-        setContent("");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const token = localStorage.getItem("token");
+  const videoId = video?.message?._id;
+
+  if (!videoId) {
+    console.warn("Video ID is missing");
+    return;
+  }
+
+  axios
+    .get(`${base_url}/api/v1/comments/${videoId}`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    })
+    .then((res) => {
+      const { enrichedComments, totalComment } = res.data.data;
+      // console.log("new ",res.data)
+
+      console.log("Video Comments:", enrichedComments);
+      console.log("Total Comments:", totalComment);
+
+      setTotalComment(totalComment);
+
+      const sortedComments = sortBy === "asc" ? enrichedComments : [...enrichedComments].reverse();
+      setComments(sortedComments);
+
+      setContent(""); // Clear input box
+    })
+    .catch((err) => {
+      console.error("Error fetching video comments:", err);
+    });
+};
 
   const submitHandler = (e) => {
     e.preventDefault();
 
     axios
       .post(
-        `http://localhost:8000/api/v1/comments/${video.message._id}`,
+        `${base_url}/api/v1/comments/${video.message._id}`,
         {
           content: content,
         },
@@ -57,18 +75,61 @@ const Comment = (video) => {
       });
   };
 
-  const handleSortBy = (e)=>{
-    setSortBy(e.target.value)
-  }
+  const handleSortBy = (e) => {
+    setSortBy(e.target.value);
+  };
+
+  const toggleCommentLike = (commentId) => {
+    axios
+      .post(
+        `${base_url}/api/v1/likes/toggle/c/${commentId}`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Toggle Comment's Like", res.data);
+        // checkAllCommentLikes()
+        getVideoComments()
+        // setIsLiked(!isLiked)
+      })
+      .catch((err) => {
+        console.log("Toggle comment likes error", err);
+      });
+  };
+
+
+  const handleCommentLikes = (commentId) => {
+    toggleCommentLike(commentId);
+  };
 
   return (
     <div>
       <div className="flex flex-col gap-5">
         <div className="flex flex-row gap-5">
-          <h4 className="text-2xl font-medium">30 Comments</h4>
-          <select className="bg-[#232222] rounded-xl p-2 outline-none"  name="sortBy" id="" value={sortBy} onChange={handleSortBy} >
-            <option className="bg-[#2d2d2d] rounded-2xl hover:bg-[#4e4e4e]" value="des">newest first</option>
-            <option className="bg-[#2d2d2d] rounded-2xl hover:bg-[#4e4e4e]" value="asc">oldest first</option>
+          <h4 className="text-2xl font-medium">{totalComment} Comments</h4>
+          <select
+            className="bg-[#232222] rounded-xl p-2 outline-none"
+            name="sortBy"
+            id=""
+            value={sortBy}
+            onChange={handleSortBy}
+          >
+            <option
+              className="bg-[#2d2d2d] rounded-2xl hover:bg-[#4e4e4e]"
+              value="des"
+            >
+              newest first
+            </option>
+            <option
+              className="bg-[#2d2d2d] rounded-2xl hover:bg-[#4e4e4e]"
+              value="asc"
+            >
+              oldest first
+            </option>
           </select>
         </div>
         <div className="flex flex-row ">
@@ -128,10 +189,14 @@ const Comment = (video) => {
                 </div>
                 <p>{comment.content}</p>
                 <div className="flex flex-row gap-5">
-                  <p>
-                    <i class="fa-regular fa-thumbs-up mr-2"></i>20
+                  <p onClick={() => handleCommentLikes(comment._id)} className="cursor-pointer mx-1">
+                    {comment.isLiked ?(<i class="fa-solid fa-thumbs-up"></i>):(<i class="fa-regular fa-thumbs-up"></i>)} {comment.likeCount || 0}
                   </p>
-                  <p>
+                  {/* <p onClick={() => handleCommentLikes(comment._id)} className="cursor-pointer">
+                    {likedComments[comment._id]?.isLiked ?(<i class="fa-solid fa-thumbs-up"></i>):(<i class="fa-regular fa-thumbs-up"></i>)}{likedComments[comment._id]?.likeCount || 0}
+                  </p> */}
+
+                  <p className="cursor-pointer">
                     <i class="fa-regular fa-thumbs-down"></i>
                   </p>
                 </div>

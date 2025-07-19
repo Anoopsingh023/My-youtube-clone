@@ -1,9 +1,11 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useSubscription } from "../context/VideoContext";
+// import { useSubscription } from "../context/VideoContext";
+import useSubscription from "../hooks/useSubscription";
 
 const Sidebar = ({ isCollapsed }) => {
-  const { subscribedChannels } = useSubscription();
+  const userId = localStorage.getItem("userId")
+  // const { subscribedChannels } = useSubscription(userId);
 
   const navigate = useNavigate();
 
@@ -125,7 +127,7 @@ const Sidebar = ({ isCollapsed }) => {
           <h2 className="mx-4 my-1">Subscriptions</h2>
 
           {/* Subscribed Channels */}
-          <div>
+          {/* <div>
             {subscribedChannels.map((subscribedChannel) => (
               <div
                 key={subscribedChannel._id}
@@ -140,7 +142,7 @@ const Sidebar = ({ isCollapsed }) => {
                 <h2>{subscribedChannel.channel.fullName}</h2>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       )}
     </>

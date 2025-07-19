@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { base_url } from "../utils/constant";
 
 function Signup() {
   const [username, setUsername] = useState("");
@@ -39,7 +40,7 @@ function Signup() {
     formData.append("coverImage", coverImage);
 
     axios
-      .post("http://localhost:8000/api/v1/users/register", formData)
+      .post(`${base_url}/api/v1/users/register`, formData)
       .then((res) => {
         console.log(res.data);
         setLoading(false);
@@ -52,7 +53,6 @@ function Signup() {
         toast.error(error.response.statusText);
       });
   };
-  //  http://localhost:8000/api/v1/users/register
 
   return (
     <>

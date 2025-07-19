@@ -4,10 +4,8 @@ import { formatDistanceToNow } from "date-fns";
 import { useRandomVideos } from "../context/VideoContext";
 
 const Video = () => {
-  const navigate = useNavigate()
-  const {filteredVideos} = useRandomVideos()
-  
-
+  const navigate = useNavigate();
+  const { filteredVideos } = useRandomVideos();
 
   const handleClick = (video) => {
     navigate("/dashboard/video-page", { state: { video } });
@@ -16,7 +14,6 @@ const Video = () => {
   const handleProfileClick = (owner) => {
     navigate(`/dashboard/${owner.username}`);
   };
-
 
   return (
     <>

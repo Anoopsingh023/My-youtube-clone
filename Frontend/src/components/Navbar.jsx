@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { base_url } from "../utils/constant";
 
 const Navbar = ({ isEnabled , onSearch,onToggleSidebar}) => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const Navbar = ({ isEnabled , onSearch,onToggleSidebar}) => {
   const logout = () => {
     axios
       .post(
-        `http://localhost:8000/api/v1/users/logout`,
+        `${base_url}/api/v1/users/logout`,
         {},
         {
           headers: {

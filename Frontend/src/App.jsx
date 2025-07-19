@@ -7,12 +7,13 @@ import Home from "./components/Dashboard/Home";
 import ChannelProfile from "./components/Dashboard/ChannelProfile";
 import UploadVideo from "./components/Dashboard/UploadVideo";
 import VideoPage from "./components/Dashboard/VideoPage";
-import Logout from "./components/logout";
 import { Channel } from "./components/userChannel/Channel";
 import UserVideos from "./components/userChannel/UserVideos"
 import UserPlaylist from "./components/userChannel/UserPlaylist";
 import UserTweets from "./components/userChannel/UserTweets";
 import UpdateUserVideo from "./components/userChannel/UpdateUserVideo";
+import PlaylistPage from "./components/userChannel/PlaylistPage";
+import UserProfile from "./components/userChannel/UserProfile";
 
 const appRouter = createBrowserRouter([
   {
@@ -36,19 +37,20 @@ const appRouter = createBrowserRouter([
       { path: ":username", element: <ChannelProfile /> },
       { path: "upload-video", element: <UploadVideo /> },
       { path: "video-page", element: <VideoPage /> },
-      { path: "logout", element: <Logout /> },
     ],
   },
   {
     path: "/channel/:username",
     element: <Channel />,
     children: [
-      {path: "", element: <UserVideos/>},
+      {path: "", element: <UserProfile/>},
+      {path: "user-profile", element: <UserProfile/>},
       {path: "user-videos", element: <UserVideos/>},
       {path: "user-playlist", element: <UserPlaylist/>},
       {path: "user-tweets", element: <UserTweets/>},
       {path: "update-video/:videoId", element: <UpdateUserVideo/>},
-      {path: "upload-video", element: <UploadVideo/>}
+      {path: "upload-video", element: <UploadVideo/>},
+      {path: ":playlistId", element: <PlaylistPage/>}
     ]
   },
 ]);

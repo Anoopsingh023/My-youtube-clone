@@ -1,15 +1,14 @@
 import React, {useState, useEffect } from "react";
 import axios from "axios";
+import { base_url } from "../../utils/constant";
 
-const useSubscription = () => {
+const useSubscription = (userId) => {
   const [subscribedChannels, setSubscribedChannels] = useState([]);
 
   const fetchSubscribedChannel = () => {
     axios
       .get(
-        `http://localhost:8000/api/v1/subscriptions/u/${localStorage.getItem(
-          "userId"
-        )}`,
+        `${base_url}/api/v1/subscriptions/u/${userId}`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -31,7 +30,7 @@ const useSubscription = () => {
     fetchSubscribedChannel()
   })
 
-  return {subscribedChannels}
+  return {subscribedChannels, refetchSubscription: fetchSubscribedChannel}
 };
 
 export default useSubscription;

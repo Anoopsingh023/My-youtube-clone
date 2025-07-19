@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { base_url } from "../../utils/constant";
 
 const UploadVideo = () => {
   const [title, setTitle] = useState("");
@@ -31,7 +32,7 @@ const UploadVideo = () => {
     formData.append("thumbnail",thumbnail)
 
     axios
-    .post("http://localhost:8000/api/v1/videos/publish", formData,{
+    .post(`${base_url}/api/v1/videos/publish`, formData,{
       headers:{
         Authorization: "Bearer "+ localStorage.getItem("token")
       }
@@ -61,7 +62,7 @@ const UploadVideo = () => {
             setTitle(e.target.value);
           }}
           required
-          className="bg-white mx-5 h-10 p-5 rounded-sm"
+          className="bg-white text-black mx-5 h-10 p-5 rounded-sm"
           type="text"
           placeholder="title"
         />
@@ -70,7 +71,7 @@ const UploadVideo = () => {
             setDescription(e.target.value);
           }}
           required
-          className="bg-white mx-5 p-5 pt-1 h-25 rounded-sm"
+          className="bg-white text-black mx-5 p-5 pt-1 h-25 rounded-sm"
           name="description"
           id=""
           placeholder="description"
