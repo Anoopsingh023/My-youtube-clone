@@ -43,7 +43,7 @@ const appRouter = createBrowserRouter([
     path: "/channel/:username",
     element: <Channel />,
     children: [
-      {path: "", element: <UserVideos/>},
+      {path: "", element: <UserProfile/>},
       {path: "user-profile", element: <UserProfile/>},
       {path: "user-videos", element: <UserVideos/>},
       {path: "user-playlist", element: <UserPlaylist/>},
