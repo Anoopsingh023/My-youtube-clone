@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { base_url } from "../utils/constant";
+import logo from "../assets/logo.jpg"
 
 function Login() {
   const [password, setPassword] = useState("");
@@ -46,7 +47,7 @@ function Login() {
       <div className="flex justify-center items-center h-screen w-full bg-black-300">
         <div className="flex flex-col justify-center items-center gap-4  w-2xl shadow-xl bg-gray-500 py-10">
           <div className="flex gap-3 justify-center items-center">
-            <img className="w-20 h-15  rounded-2xl" src="../src/assets/logo.jpg" alt="logo" />
+            <img className="w-20 h-15  rounded-2xl" src={logo} alt="logo" />
             <h2 className="text-2xl text-white">LogIn</h2>
           </div>
 
