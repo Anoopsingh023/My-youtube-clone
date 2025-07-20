@@ -74,12 +74,12 @@ const Sidebar = ({ isCollapsed }) => {
               label: "Subscriptions",
             },
             {
-              to: "/dashboard/my-video",
+              to: "/dashboard/history",
               icon: "fa-clock-rotate-left",
               label: "History",
             },
             {
-              to: "/dashboard/my-video",
+              to: "/dashboard/playlist",
               icon: "fa-list",
               label: "Playlist",
             },
@@ -89,17 +89,17 @@ const Sidebar = ({ isCollapsed }) => {
               label: "Your Video",
             },
             {
-              to: "/dashboard/my-video",
+              to: "/dashboard/your-course",
               icon: "fa-graduation-cap",
               label: "Your Courses",
             },
             {
-              to: "/dashboard/my-video",
+              to: "/dashboard/watch-later",
               icon: "fa-clock",
               label: "Watch Later",
             },
             {
-              to: "/dashboard/my-video",
+              to: "/dashboard/liked-video",
               icon: "fa-thumbs-up",
               label: "Liked Videos",
             },

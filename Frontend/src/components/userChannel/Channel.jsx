@@ -52,7 +52,7 @@ export const Channel = () => {
                 : "hover:bg-[#272626]"
             } w-[90%] py-2 px-4 duration-300 rounded-xl`}
           >
-            <i className="fa-solid fa-house mr-5"></i> Profile
+            <i class="fa-solid fa-user"></i> Profile
           </Link>
           <Link
             to={`/channel/${localStorage.getItem("userName")}/user-videos`}
@@ -62,7 +62,7 @@ export const Channel = () => {
                 : "hover:bg-[#272626]"
             } w-[90%] py-2 px-4 duration-300 rounded-xl`}
           >
-            <i className="fa-solid fa-house mr-5"></i> Video
+            <i class="fa-solid fa-video"></i> Video
           </Link>
 
           <Link
@@ -73,7 +73,7 @@ export const Channel = () => {
                 : "hover:bg-[#272626]"
             } w-[90%] py-2 px-4 duration-300 rounded-xl`}
           >
-            <i className="fa-solid fa-house mr-5"></i> Playlist
+            <i class="fa-solid fa-bars"></i> Playlist
           </Link>
 
           <Link

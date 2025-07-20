@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { base_url } from "../utils/constant";
+import {logo} from "../assets/logo.jpg"
 
 function Signup() {
   const [username, setUsername] = useState("");
@@ -59,7 +60,7 @@ function Signup() {
       <div className="flex justify-center items-center h-screen w-full bg-black-300">
         <div className="flex flex-col justify-center items-center gap-4  w-2xl shadow-xl shadow-gray-700 bg-gray-500 py-10">
           <div className="flex gap-3 justify-center items-center">
-            <img className="w-20 h-15" src="../img/logo.jpg" alt="logo" />
+            <img className="w-20 h-15" src={logo} alt="logo" />
             <h2 className="text-2xl text-white">My YouTube</h2>
           </div>
           <div className="flex flex-col">

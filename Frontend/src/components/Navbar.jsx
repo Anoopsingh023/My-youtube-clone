@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { base_url } from "../utils/constant";
+import {logo} from "../assets/logo.jpg"
 
 const Navbar = ({ isEnabled , onSearch,onToggleSidebar}) => {
   const navigate = useNavigate();
@@ -89,7 +90,7 @@ const Navbar = ({ isEnabled , onSearch,onToggleSidebar}) => {
           
           <img
             className="h-12 p-2 rounded-2xl "
-            src="../../src/assets/logo.jpg"
+            src={logo}
             alt="logo"
           />
           <h2>My YouTube</h2>
