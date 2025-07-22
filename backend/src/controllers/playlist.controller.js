@@ -31,7 +31,7 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
     return res.status(400).json(new apiResponse(400, null, "Invalid user ID"));
   }
 
-  const playlists = await Playlist.find({ owner: userId }).populate("videos","thumbnail title views");
+  const playlists = await Playlist.find({ owner: userId }).populate("videos","thumbnail title views createdAt");
 
   return res
     .status(200)
