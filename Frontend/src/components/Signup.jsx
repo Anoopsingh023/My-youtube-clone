@@ -3,7 +3,8 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { base_url } from "../utils/constant";
-import {logo} from "../assets/logo.jpg"
+// import {logo} from "../assets/logo.jpg"
+import logo from "../assets/logo.jpg"
 
 function Signup() {
   const [username, setUsername] = useState("");

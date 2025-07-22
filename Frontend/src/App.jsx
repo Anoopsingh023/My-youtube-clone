@@ -14,6 +14,14 @@ import UserTweets from "./components/userChannel/UserTweets";
 import UpdateUserVideo from "./components/userChannel/UpdateUserVideo";
 import PlaylistPage from "./components/userChannel/PlaylistPage";
 import UserProfile from "./components/userChannel/UserProfile";
+import ShortPage from "./components/Dashboard/ShortPage";
+import Subscription from "./components/Dashboard/Subscription";
+import LikedVideos from "./components/Dashboard/LikedVideos";
+import WatchLater from "./components/Dashboard/WatchLater";
+import SavedPlaylist from "./components/Dashboard/SavedPlaylist";
+import Cources from "./components/Dashboard/Cources";
+import History from "./components/Dashboard/History";
+import Playlist from "./components/Dashboard/Playlist";
 
 const appRouter = createBrowserRouter([
   {
@@ -37,6 +45,14 @@ const appRouter = createBrowserRouter([
       { path: ":username", element: <ChannelProfile /> },
       { path: "upload-video", element: <UploadVideo /> },
       { path: "video-page", element: <VideoPage /> },
+      { path: "short-page", element: <ShortPage /> },
+      { path: "subscription", element: <Subscription /> },
+      { path: "liked-videos", element: <LikedVideos /> },
+      { path: "watch-later", element: <WatchLater /> },
+      { path: "saved-playlist", element: <SavedPlaylist /> },
+      { path: "cources", element: <Cources /> },
+      { path: "history", element: <History /> },
+      { path: "playlist/:playlistId", element: <Playlist /> },
     ],
   },
   {

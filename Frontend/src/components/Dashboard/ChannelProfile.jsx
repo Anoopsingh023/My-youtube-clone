@@ -94,6 +94,10 @@ const ChannelProfile = () => {
     navigate("/dashboard/video-page", { state: { video } });
   };
 
+  const handlePlaylist = (playlist) =>{
+    navigate(`/dashboard/playlist/${playlist._id}`,{state: {playlist, user}})
+  }
+
   var settings = {
     dots: true,
     infinite: false,
@@ -289,23 +293,26 @@ const ChannelProfile = () => {
               playlists.map((playlist) => (
                 <div
                   key={playlist._id}
+                  onClick={()=>handlePlaylist(playlist)}
                   className="p-2 cursor-pointer rounded-2xl hover:bg-[#abaaaa27] duration-300"
                 >
                   {playlist.videos.length > 0 ? (
                     <img
                       src={playlist.videos[0].thumbnail}
+                      onClick={()=>handlePlaylist(playlist)}
                       alt="thumbnail"
                       className="w-full aspect-video object-cover rounded-xl"
                     />
                   ) : (
                     <div className="h-32 w-full flex items-center justify-center bg-[#1f1f1f] text-gray-400 italic rounded-xl">
-                      No videos
+                      No Playlists
                     </div>
                   )}
 
                   <div className="flex flex-col p-2 font-medium text-white">
                     <h2 className="text-lg md:text-xl">{playlist.name}</h2>
-                    <p className="text-sm text-gray-400">View full playlist</p>
+                    <p onClick={()=>handlePlaylist(playlist)}
+                     className="text-sm text-gray-400">View full playlist</p>
                   </div>
                 </div>
               ))
