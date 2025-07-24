@@ -247,8 +247,6 @@
 
 // export default VideoPage;
 
-
-
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -258,6 +256,7 @@ import Video from "./Video";
 import { toast } from "react-toastify";
 import { base_url } from "../../utils/constant";
 import { useHistory } from "../context/VideoContext";
+import { motion } from "motion/react";
 
 const VideoPage = () => {
   const { state } = useLocation();
@@ -268,11 +267,10 @@ const VideoPage = () => {
   const [isDisliked, setIsDislike] = useState(false);
   const [views, setViews] = useState("");
 
-  const {addToWatchHistory} = useHistory()
+  const { addToWatchHistory } = useHistory();
 
   const video = state?.video;
   console.log("video-page", video);
-  
 
   useEffect(() => {
     getChannelProfile();
@@ -411,7 +409,15 @@ const VideoPage = () => {
   if (!video) return <p>Video not found</p>;
 
   return (
-    <div className="flex flex-col lg:flex-row text-white m-3 lg:m-5 gap-4 lg:gap-5 pb-40">
+    <motion.div
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{
+        duration: 0.8,
+        scale: { type: "spring", visualDuration: 0.6, bounce: 0.1 },
+      }}
+      className="flex flex-col lg:flex-row text-white m-3 lg:m-5 gap-4 lg:gap-5 pb-40"
+    >
       <div className="w-full lg:w-[65%]">
         <video src={video.videoFile} controls className="rounded-2xl w-full" />
         <h1 className="text-white text-lg md:text-xl font-medium mt-2">
@@ -461,7 +467,8 @@ const VideoPage = () => {
                 <i className="fa-solid fa-thumbs-up"></i>
               ) : (
                 <i className="fa-regular fa-thumbs-up"></i>
-              )} {likes}
+              )}{" "}
+              {likes}
             </p>
             <p onClick={handleDiskie} className="text-sm cursor-pointer">
               {isDisliked ? (
@@ -522,7 +529,8 @@ const VideoPage = () => {
                   <i className="fa-solid fa-thumbs-up"></i>
                 ) : (
                   <i className="fa-regular fa-thumbs-up"></i>
-                )} {likes}
+                )}{" "}
+                {likes}
               </p>
               <p onClick={handleDiskie}>
                 {isDisliked ? (
@@ -557,7 +565,7 @@ const VideoPage = () => {
       <div className="w-full lg:w-[30%]">
         <Video />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { useRandomVideos } from "../context/VideoContext";
+import { motion } from "motion/react";
 
 const Video = () => {
   const navigate = useNavigate();
@@ -18,9 +19,11 @@ const Video = () => {
   return (
     <>
       {filteredVideos.map((video) => (
-        <div
+        <motion.div
+        whileHover={{ scale: 1.025 }}
+  whileTap={{ scale: 0.95 }}
           key={video._id}
-          className="  p-2 text-white cursor-pointer rounded-2xl hover:bg-[#abaaaa27] duration-600"
+          className="  p-2 text-white cursor-pointer rounded-2xl  duration-600"
         >
           <img
             onClick={() => handleClick(video)}
@@ -62,7 +65,7 @@ const Video = () => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       ))}
     </>
   );
