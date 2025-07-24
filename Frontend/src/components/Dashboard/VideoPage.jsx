@@ -257,6 +257,7 @@ import Comment from "../comment/Comment";
 import Video from "./Video";
 import { toast } from "react-toastify";
 import { base_url } from "../../utils/constant";
+import { useHistory } from "../context/VideoContext";
 
 const VideoPage = () => {
   const { state } = useLocation();
@@ -267,8 +268,11 @@ const VideoPage = () => {
   const [isDisliked, setIsDislike] = useState(false);
   const [views, setViews] = useState("");
 
+  const {addToWatchHistory} = useHistory()
+
   const video = state?.video;
   console.log("video-page", video);
+  
 
   useEffect(() => {
     getChannelProfile();
@@ -476,7 +480,7 @@ const VideoPage = () => {
         </div>
 
         {/* Desktop layout remains unchanged */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 my-4 hidden sm:flex">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 my-4  sm:flex">
           <div className="flex items-center gap-3">
             <img
               onClick={() => handleProfileClick(video.owner)}

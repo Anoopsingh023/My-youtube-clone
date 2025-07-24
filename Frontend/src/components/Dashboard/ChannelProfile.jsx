@@ -98,12 +98,41 @@ const ChannelProfile = () => {
     navigate(`/dashboard/playlist/${playlist._id}`,{state: {playlist, user}})
   }
 
+  
+
   var settings = {
     dots: true,
     infinite: false,
     speed: 500,
     slidesToShow: 4,
-    slidesToScroll: 3,
+    slidesToScroll: 4,
+    initialSlide: 0,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
+    ]
   };
 
   return (
@@ -209,7 +238,7 @@ const ChannelProfile = () => {
                   ))
                 ) : (
                   <div className="h-32 w-full flex items-center justify-center bg-[#1f1f1f] text-gray-400 italic rounded-xl">
-                    No Videos
+                    
                   </div>
                 )}
               </Slider>
@@ -223,7 +252,7 @@ const ChannelProfile = () => {
                   playlists.map((playlist) => (
                     <div
                       key={playlist._id}
-                      className="p-2 cursor-pointer rounded-2xl hover:bg-[#abaaaa27] duration-300"
+                      className="p-2 cursor-pointer rounded-2xl hover:bg-[#5c5b5b25] duration-300"
                     >
                       {playlist.videos.length > 0 ? (
                         <img
@@ -233,13 +262,13 @@ const ChannelProfile = () => {
                         />
                       ) : (
                         <div className="h-32 w-full flex items-center justify-center bg-[#1f1f1f] text-gray-400 italic rounded-xl">
-                          No videos
+                          No Video
                         </div>
                       )}
 
                       <div className="flex flex-col p-2 font-medium text-white">
                         <h2 className="text-lg md:text-xl">{playlist.name}</h2>
-                        <p className="text-sm text-gray-400">
+                        <p className="text-sm text-gray-400 hover:text-white">
                           View full playlist
                         </p>
                       </div>
@@ -247,7 +276,7 @@ const ChannelProfile = () => {
                   ))
                 ) : (
                   <div className="h-32 w-full flex items-center justify-center bg-[#1f1f1f] text-gray-400 italic rounded-xl">
-                    No Playlist
+                    
                   </div>
                 )}
               </Slider>
@@ -294,7 +323,7 @@ const ChannelProfile = () => {
                 <div
                   key={playlist._id}
                   onClick={()=>handlePlaylist(playlist)}
-                  className="p-2 cursor-pointer rounded-2xl hover:bg-[#abaaaa27] duration-300"
+                  className="p-2 cursor-pointer rounded-2xl hover:bg-[#5c5b5b25] duration-300"
                 >
                   {playlist.videos.length > 0 ? (
                     <img
@@ -312,7 +341,7 @@ const ChannelProfile = () => {
                   <div className="flex flex-col p-2 font-medium text-white">
                     <h2 className="text-lg md:text-xl">{playlist.name}</h2>
                     <p onClick={()=>handlePlaylist(playlist)}
-                     className="text-sm text-gray-400">View full playlist</p>
+                     className="text-sm text-gray-400 hover:text-white">View full playlist</p>
                   </div>
                 </div>
               ))
