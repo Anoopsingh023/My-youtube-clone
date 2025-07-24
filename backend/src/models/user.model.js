@@ -38,10 +38,15 @@ const userSchema = new Schema({
         type: String,   // cloudinary link
         // required: true
     },
-    watchHistory: {
-        type: Schema.Types.ObjectId,
-        ref: "Video"
-    },
+    // watchHistory: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Video"
+    // },
+    watchHistory: [{
+    video: { type: Schema.Types.ObjectId, ref: "Video" },
+    watchedAt: { type: Date, default: Date.now }
+}],
+
     refreshToken: {
         type: String
     }

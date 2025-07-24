@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { Video } from "../models/video.model.js";
 import { User } from "../models/user.model.js";
+import {View} from "../models/views.model.js"
 import {
   deleteImageFromCloudinary,
   uploadOnCloudinary,
@@ -305,15 +306,49 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     );
 });
 
+// const getTotalViewsOnVideo = asyncHandler(async (req, res) => {
+//   const { videoId } = req.params;
+
+//   const video = await Video.findById(req.params.videoId);
+//   video.views += 1;
+//   await video.save();
+
+//   return res.status(200).json(new apiResponse(200, video, "ok"));
+// });
+
+
 const getTotalViewsOnVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+  const userId = req.user._id; // assuming middleware sets req.user
 
-  const video = await Video.findById(req.params.videoId);
-  video.views += 1;
-  await video.save();
+  if (!mongoose.Types.ObjectId.isValid(videoId)) {
+    return res.status(400).json(new apiResponse(400, null, "Invalid video ID"));
+  }
 
-  return res.status(200).json(new apiResponse(200, video, "ok"));
+  const video = await Video.findById(videoId);
+  if (!video) {
+    return res.status(404).json(new apiResponse(404, null, "Video not found"));
+  }
+
+  // Check if this user already viewed in last 6 hours
+  const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000);
+
+  const alreadyViewed = await View.findOne({
+    videoId,
+    userId,
+    viewedAt: { $gte: sixHoursAgo },
+  });
+
+  if (!alreadyViewed) {
+    video.views += 1;
+    await video.save();
+
+    await View.create({ videoId, userId });
+  }
+
+  return res.status(200).json(new apiResponse(200, video, "View tracked"));
 });
+
 
 export {
   getAllVideo,
