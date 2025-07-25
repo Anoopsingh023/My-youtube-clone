@@ -306,17 +306,6 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     );
 });
 
-// const getTotalViewsOnVideo = asyncHandler(async (req, res) => {
-//   const { videoId } = req.params;
-
-//   const video = await Video.findById(req.params.videoId);
-//   video.views += 1;
-//   await video.save();
-
-//   return res.status(200).json(new apiResponse(200, video, "ok"));
-// });
-
-
 const getTotalViewsOnVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const userId = req.user._id; // assuming middleware sets req.user

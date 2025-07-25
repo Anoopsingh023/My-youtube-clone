@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiError } from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
+import { Playlist } from "../models/playlist.model.js";
 import {
   uploadOnCloudinary,
   deleteImageFromCloudinary,
@@ -597,6 +598,103 @@ const getUserById = asyncHandler(async (req, res) => {
     .json(new apiResponse(200, user, "User fetched successfully"));
 });
 
+const togglePlaylistInWatchLater = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { playlistId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(playlistId)) {
+    return res
+      .status(400)
+      .json(new apiResponse(400, null, "Invalid playlist ID"));
+  }
+
+  const playlist = await Playlist.findById(playlistId);
+  if (!playlist) {
+    return res
+      .status(404)
+      .json(new apiResponse(404, null, "Playlist not found"));
+  }
+
+  const user = await User.findById(userId).select("-password -refreshToken");
+
+  const index = user.watchLaterPlaylists.findIndex(
+    (id) => id.toString() === playlistId
+  );
+
+  let message = "";
+
+  if (index !== -1) {
+    // Playlist exists, remove it
+    user.watchLaterPlaylists.splice(index, 1);
+    message = "Playlist removed from Watch Later";
+  } else {
+    // Playlist does not exist, add it
+    user.watchLaterPlaylists.push(playlistId);
+    message = "Playlist added to Watch Later";
+  }
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new apiResponse(200, user.watchLaterPlaylists, message));
+});
+
+const getWatchLaterPlaylists = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const user = await User.findById(userId)
+    .populate({
+      path: "watchLaterPlaylists",
+      populate: {
+        path: "videos",
+        select: "title thumbnail", // minimal payload
+      },
+    })
+    .select("-password -refreshToken");
+
+  return res
+    .status(200)
+    .json(
+      new apiResponse(
+        200,
+        user.watchLaterPlaylists,
+        "Watch Later playlists fetched successfully"
+      )
+    );
+});
+
+const isPlaylistInWatchLater = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { playlistId } = req.params; // or req.query.playlistId if you prefer
+
+  if (!playlistId || !mongoose.Types.ObjectId.isValid(playlistId)) {
+    return res
+      .status(400)
+      .json(new apiResponse(400, null, "Invalid playlist ID"));
+  }
+
+  const user = await User.findById(userId).select("watchLaterPlaylists"); // minimal fetch
+
+  if (!user) {
+    return res.status(404).json(new apiResponse(404, null, "User not found"));
+  }
+
+  const isAdded = user.watchLaterPlaylists?.some(
+    (id) => id.toString() === playlistId
+  );
+
+  return res
+    .status(200)
+    .json(
+      new apiResponse(
+        200,
+        { playlistId, isAdded },
+        "Watch Later status fetched successfully"
+      )
+    );
+});
+
 export {
   registrUser,
   loginUser,
@@ -613,4 +711,7 @@ export {
   removeFromWatchHistory,
   clearWatchHistory,
   getUserById,
+  togglePlaylistInWatchLater,
+  getWatchLaterPlaylists,
+  isPlaylistInWatchLater,
 };

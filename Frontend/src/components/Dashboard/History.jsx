@@ -16,15 +16,15 @@ const History = () => {
   };
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Watch History</h2>
+    <div className="p-4 max-w-6xl mx-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2 sm:gap-0">
+        <h2 className="text-xl sm:text-2xl font-semibold">Watch History</h2>
         {history.length > 0 && (
           <button
-            className="cursor-pointer text-[#504e4e] hover:text-white"
+            className="text-[#504e4e] hover:text-white text-sm sm:text-base"
             onClick={clearHistory}
           >
-            clear All
+            Clear All
           </button>
         )}
       </div>
@@ -36,37 +36,39 @@ const History = () => {
           {history.map(({ video, watchedAt }) => (
             <div
               key={video._id}
-              className="flex gap-4 items-start  pb-4 group hover:bg-[#4c4b4b16] duration-500 p-2 rounded-lg"
+              className="flex flex-col sm:flex-row gap-4 items-start bg-transparent group hover:bg-[#4c4b4b16] transition-all duration-300 p-2 rounded-lg"
             >
               <img
                 onClick={() => handleClick(video)}
                 src={video.thumbnail}
                 alt="thumbnail"
-                className="w-54 h-38 object-cover rounded-md cursor-pointer"
+                className="w-full sm:w-56 h-36 object-cover rounded-md cursor-pointer"
               />
+
               <div className="flex-1">
                 <h3
                   onClick={() => handleClick(video)}
-                  className="text-lg font-medium line-clamp-2 cursor-pointer"
+                  className="text-md sm:text-lg font-medium line-clamp-2 cursor-pointer"
                 >
                   {video.title}
                 </h3>
                 <p
                   onClick={() => handleProfileClick(video.owner)}
-                  className="text-md text-gray-400 cursor-pointer hover:text-white"
+                  className="text-sm sm:text-md text-gray-400 cursor-pointer hover:text-white"
                 >
                   {video.owner.fullName}
                 </p>
                 <p className="text-sm text-gray-400">{video.views} views</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-xs text-gray-500">
                   Watched {moment(watchedAt).fromNow()}
                 </p>
               </div>
+
               <button
-                className="cursor-pointer hover:bg-[#636262] py-2 px-4 rounded-full"
+                className="self-start sm:self-center hover:bg-[#636262] p-2 rounded-full"
                 onClick={() => removevideo(video._id)}
               >
-                <i class="fa-solid fa-xmark"></i>
+                <i className="fa-solid fa-xmark text-sm sm:text-base"></i>
               </button>
             </div>
           ))}
