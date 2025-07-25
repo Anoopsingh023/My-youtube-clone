@@ -238,7 +238,8 @@ const VideoPage = () => {
         </div>
 
         {/* Desktop layout remains unchanged */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 my-4 hidden sm:flex">
+        <div className="hidden sm:flex flex-col md:flex-row justify-between items-start md:items-center gap-3 my-4">
+
           <div className="flex items-center gap-3">
             <img
               onClick={() => handleProfileClick(video.owner)}
