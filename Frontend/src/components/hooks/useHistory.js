@@ -8,7 +8,7 @@ const useHistory = () => {
   const addToWatchHistory = async (videoId) => {
     try {
       const res = await axios.post(
-        `${base_url}/users/history/${videoId}`,
+        `${base_url}/api/v1/users/history/${videoId}`,
         null,
         {
           headers: {
