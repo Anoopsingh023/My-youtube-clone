@@ -28,7 +28,7 @@ const useHistory = () => {
 
   const fetchHistory = async () => {
     try {
-      const res = await axios.get(`${base_url}/users/history`, {
+      const res = await axios.get(`${base_url}/api/v1/users/history`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -50,7 +50,7 @@ const useHistory = () => {
     )
       return;
     try {
-      await axios.delete(`${base_url}/users/history/${videoId}`, {
+      await axios.delete(`${base_url}/api/v1/users/history/${videoId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -64,7 +64,7 @@ const useHistory = () => {
   const clearHistory = async () => {
     if (!window.confirm("Are you sure you want to clear your history?")) return;
     try {
-      await axios.delete(`${base_url}/users/history`, {
+      await axios.delete(`${base_url}/api/v1/users/history`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
