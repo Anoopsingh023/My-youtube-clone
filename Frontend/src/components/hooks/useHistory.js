@@ -1,24 +1,30 @@
-import React, {useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { base_url } from "../../utils/constant";
 
 const useHistory = () => {
   const [history, setHistory] = useState([]);
 
-  const base_url = "http://localhost:8000/api/v1";
-
   const addToWatchHistory = async (videoId) => {
-  try {
-    const res = await axios.post(`${base_url}/users/history/${videoId}`, null, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    console.log("Added to watch history:", res.data);
-    fetchHistory()
-  } catch (error) {
-    console.error("Error adding to history:", error.response?.data || error.message);
-  }
-};
+    try {
+      const res = await axios.post(
+        `${base_url}/users/history/${videoId}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("Added to watch history:", res.data);
+      fetchHistory();
+    } catch (error) {
+      console.error(
+        "Error adding to history:",
+        error.response?.data || error.message
+      );
+    }
+  };
 
   const fetchHistory = async () => {
     try {
@@ -37,7 +43,12 @@ const useHistory = () => {
   };
 
   const removeFromHistory = async (videoId) => {
-    if (!window.confirm("Are you sure you want to remove this video from history?")) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to remove this video from history?"
+      )
+    )
+      return;
     try {
       await axios.delete(`${base_url}/users/history/${videoId}`, {
         headers: {
@@ -68,7 +79,12 @@ const useHistory = () => {
     fetchHistory();
   }, []);
 
-  return {history, addToWatchHistory:addToWatchHistory, removevideo: removeFromHistory, clearHistory: clearHistory}
+  return {
+    history,
+    addToWatchHistory: addToWatchHistory,
+    removevideo: removeFromHistory,
+    clearHistory: clearHistory,
+  };
 };
 
 export default useHistory;
