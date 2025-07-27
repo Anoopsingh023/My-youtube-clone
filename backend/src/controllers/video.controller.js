@@ -338,6 +338,103 @@ const getTotalViewsOnVideo = asyncHandler(async (req, res) => {
   return res.status(200).json(new apiResponse(200, video, "View tracked"));
 });
 
+const toggleVideoInWatchLater = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { videoId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(videoId)) {
+    return res
+      .status(400)
+      .json(new apiResponse(400, null, "Invalid Video ID"));
+  }
+
+  const video = await Video.findById(videoId);
+  if (!video) {
+    return res
+      .status(404)
+      .json(new apiResponse(404, null, "Video not found"));
+  }
+
+  const user = await User.findById(userId).select("-password -refreshToken");
+
+  const index = user.watchLaterVideos.findIndex(
+    (id) => id.toString() === videoId
+  );
+
+  let message = "";
+
+  if (index !== -1) {
+    // Video exists, remove it
+    user.watchLaterVideos.splice(index, 1);
+    message = "Video removed from Watch Later";
+  } else {
+    // Video does not exist, add it
+    user.watchLaterVideos.push(videoId);
+    message = "Video added to Watch Later";
+  }
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new apiResponse(200, user.watchLaterVideos, message));
+});
+
+const getWatchLaterVideos = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const user = await User.findById(userId)
+    .populate({
+      path: "watchLaterVideos",
+      select: "title thumbnail owner", // Include 'owner' for next level populate
+      populate: {
+        path: "owner",
+        select: "fullName avatar username", // Customize as needed
+      },
+    })
+    .select("-password -refreshToken");
+
+  return res.status(200).json(
+    new apiResponse(
+      200,
+      user.watchLaterVideos,
+      "Watch Later Videos fetched successfully"
+    )
+  );
+});
+
+
+
+const isVideoInWatchLater = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { videoId } = req.params; // or req.query.playlistId if you prefer
+
+  if (!videoId || !mongoose.Types.ObjectId.isValid(videoId)) {
+    return res
+      .status(400)
+      .json(new apiResponse(400, null, "Invalid Video ID"));
+  }
+
+  const user = await User.findById(userId).select("watchLaterVideos"); // minimal fetch
+
+  if (!user) {
+    return res.status(404).json(new apiResponse(404, null, "User not found"));
+  }
+
+  const isAdded = user.watchLaterVideos?.some(
+    (id) => id.toString() === videoId
+  );
+
+  return res
+    .status(200)
+    .json(
+      new apiResponse(
+        200,
+        { videoId, isAdded },
+        "Watch Later status fetched successfully"
+      )
+    );
+});
 
 export {
   getAllVideo,
@@ -348,4 +445,7 @@ export {
   togglePublishStatus,
   getUserVideos,
   getTotalViewsOnVideo,
+  toggleVideoInWatchLater,
+  getWatchLaterVideos,
+  isVideoInWatchLater
 };

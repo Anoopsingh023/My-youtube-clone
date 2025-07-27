@@ -45,6 +45,12 @@ const userSchema = new Schema(
         ref: "Playlist",
       },
     ],
+    watchLaterVideos: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Video",
+      },
+    ],
     watchHistory: [
       {
         video: { type: Schema.Types.ObjectId, ref: "Video" },
