@@ -7,12 +7,12 @@ const Sidebar = ({ isCollapsed }) => {
 
   const navLinks = [
     { to: "/dashboard/home", icon: "fa-house", label: "Home" },
-    { to: "/dashboard/short-page", icon: "fa-bolt", label: "Shorts" },
+    // { to: "/dashboard/short-page", icon: "fa-bolt", label: "Shorts" },
     { to: "/dashboard/subscription", icon: "fa-tv", label: "Subscriptions" },
     { to: "/dashboard/history", icon: "fa-clock-rotate-left", label: "History" },
     { to: "/dashboard/saved-playlist", icon: "fa-list", label: "Playlist" },
     { to: `/channel/${username}`, icon: "fa-video", label: "Your Video" },
-    { to: "/dashboard/courses", icon: "fa-graduation-cap", label: "Your Courses" },
+    // { to: "/dashboard/courses", icon: "fa-graduation-cap", label: "Your Courses" },
     { to: "/dashboard/watch-later", icon: "fa-clock", label: "Watch Later" },
     { to: "/dashboard/liked-videos", icon: "fa-thumbs-up", label: "Liked Videos" },
   ];

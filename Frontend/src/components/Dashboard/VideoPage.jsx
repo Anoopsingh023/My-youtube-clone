@@ -94,7 +94,7 @@ const VideoPage = () => {
 
   const getTotalLikes = () => {
     axios
-      .get(`${base_url}/api/v1/likes/${video._id}`, {
+      .get(`${base_url}/api/v1/likes/v/${video._id}`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
