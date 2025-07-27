@@ -1,12 +1,13 @@
 import React,{useState, useEffect} from 'react'
 import axios from 'axios';
+import { base_url } from '../../utils/constant';
 
 const LikedVideos = () => {
   const [likedVideos, setLikedVideos] = useState([]);
 
   const fetchLikedVideos = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/likes/liked-videos",{
+      const res = await axios.get(`${base_url}/api/v1/likes/liked-videos`,{
         headers: {
           Authorization: "Bearer "+ localStorage.getItem("token")
         }
