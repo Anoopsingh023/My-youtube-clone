@@ -1,4 +1,4 @@
-import mongoose, { isValidObjectId } from "mongoose";
+import mongoose, { isValidObjectId,Types } from "mongoose";
 import { Like } from "../models/like.model.js";
 import { apiError } from "../utils/apiError.js";
 import { apiResponse } from "../utils/apiResponse.js";
@@ -95,100 +95,72 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 });
 
 const getLikedVideos = asyncHandler(async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
+  const page  = Number.parseInt(req.query.page, 10)  || 1;
+  const limit = Number.parseInt(req.query.limit, 10) || 10;
+  const skip  = (page - 1) * limit;
 
-  const userId = new mongoose.Types.ObjectId(req.user._id);
+  const userIdRaw = req.user?._id;
 
-  // 1️⃣ Get total liked videos count
+  // 1) Validate early
+  if (!isValidObjectId(userIdRaw)) {
+    return res.status(400).json(new apiResponse(400, null, "Invalid user ID"));
+  }
+
+  // 2) **Always** convert to hex string first, then create a fresh ObjectId
+  const userId = new Types.ObjectId(userIdRaw.toString());
+
+  // 1️⃣ Total Count
   const totalLikedVideoResult = await Like.aggregate([
-    {
-      $match: {
-        likedBy: userId,
-        video: { $ne: null },
-      },
-    },
-    {
-      $count: "total",
-    },
+    { $match: { likedBy: userId, video: { $ne: null } } },
+    { $count: "total" },
   ]);
-
   const totalLikedVideos = totalLikedVideoResult[0]?.total || 0;
 
-  // 2️⃣ Get paginated liked videos with info
-  const likedByVideos = await User.aggregate([
-    {
-      $match: { _id: userId },
-    },
+  // 2️⃣ Paginated fetch
+  const likedVideos = await Like.aggregate([
+    { $match: { likedBy: userId, video: { $ne: null } } },
+    { $sort: { createdAt: -1 } },
+    { $skip: skip },
+    { $limit: limit },
     {
       $lookup: {
-        from: "likes",
-        let: { userId: "$_id" },
+        from: "videos",
+        localField: "video",
+        foreignField: "_id",
+        as: "video",
         pipeline: [
           {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$likedBy", "$$userId"] },
-                  { $ne: ["$video", null] },
-                ],
-              },
+            $project: {
+              videoFile: 1,
+              thumbnail: 1,
+              title: 1,
+              owner: 1,
             },
           },
-          { $sort: { createdAt: -1 } },
-          { $skip: skip },
-          { $limit: limit },
           {
-            $lookup: {
-              from: "videos",
-              localField: "video",
+          $lookup: {
+              from: "users",
+              localField: "owner",
               foreignField: "_id",
-              as: "video",
+              as: "owner",
               pipeline: [
-                {
-                  $project: {
-                    videoFile: 1,
-                    thumbnail: 1,
-                    title: 1,
-                    owner: 1,
-                  },
-                },
-                {
-                  $lookup: {
-                    from: "users",
-                    localField: "owner",
-                    foreignField: "_id",
-                    as: "owner",
-                    pipeline: [
-                      {
-                        $project: {
-                          fullName: 1,
-                          avatar: 1,
-                          username: 1,
-                        },
-                      },
-                    ],
-                  },
-                },
-                { $unwind: "$owner" },
+                { $project: { fullName: 1, avatar: 1, username: 1 } },
               ],
             },
           },
-          { $unwind: "$video" },
-          {
-            $project: {
-              likedAt: "$createdAt",
-              video: 1,
-            },
-          },
+          { $unwind: "$owner" },
         ],
-        as: "likedVideos",
+      },
+    },
+    { $unwind: "$video" },
+    {
+      $project: {
+        likedAt: "$createdAt",
+        video: 1,
       },
     },
   ]);
 
-  // 3️⃣ Return response with pagination
   return res.status(200).json(
     new apiResponse(
       200,
@@ -196,15 +168,19 @@ const getLikedVideos = asyncHandler(async (req, res) => {
         totalLikedVideos,
         currentPage: page,
         totalPages: Math.ceil(totalLikedVideos / limit),
-        likedVideos: likedByVideos[0]?.likedVideos || [],
+        likedVideos,
       },
       "Liked videos fetched successfully"
     )
   );
 });
 
+
 const totalLikesOnVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(videoId)) {
+    return res.status(400).json(new apiResponse(400, null, "Invalid video ID"));
+  }
 
   const totalLikes = await Video.aggregate([
     {
