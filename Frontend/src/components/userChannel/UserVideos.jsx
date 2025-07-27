@@ -20,7 +20,7 @@ const UserVideos = () => {
     if (!window.confirm("Are you sure you want to delete this video?")) return;
 
     try {
-      await axios.delete(`${base_url}/api/v1/videos/${videoId}`, {
+      await axios.delete(`${base_url}/api/v1/videos/v/${videoId}`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },

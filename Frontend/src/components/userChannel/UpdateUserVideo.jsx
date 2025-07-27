@@ -58,14 +58,14 @@ const UpdateUserVideo = () => {
     setIsLoading(true);
 
     const formData = new FormData();
-    
+
     formData.append("title", title);
     formData.append("description", description);
     if (thumbnailUrl) {
       formData.append("thumbnail", thumbnail);
     }
     await axios
-      .patch(`${base_url}/api/v1/videos/${video._id}`, formData, {
+      .patch(`${base_url}/api/v1/videos/v/${video._id}`, formData, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -99,7 +99,6 @@ const UpdateUserVideo = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter video title"
-            
           />
         </div>
 
@@ -113,7 +112,6 @@ const UpdateUserVideo = () => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter video description"
-           
           />
         </div>
 
