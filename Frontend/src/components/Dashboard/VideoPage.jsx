@@ -19,8 +19,10 @@ const VideoPage = () => {
   const [views, setViews] = useState("");
   const [isSaved, setIsSaved] = useState(false);
 
+  const { addToWatchHistory } = useHistory();
+
   const video = state?.video;
-  // console.log("video-page", video);
+  console.log("video-page", video);
   const videoId = video._id;
 
   useEffect(() => {
@@ -28,6 +30,7 @@ const VideoPage = () => {
     getTotalLikes();
     isVideoLiked();
     getvideoViews();
+    addToWatchHistory(videoId)
     isVideoInWatchLater();
   }, [video.owner.username, video._id]);
 
