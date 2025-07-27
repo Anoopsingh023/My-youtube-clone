@@ -38,7 +38,7 @@ const Playlist = () => {
   };
 
   const savePlaylist = ()=>{
-    axios.post(`http://localhost:8000/api/v1/users/playlist/${playlistId}`,{}, {
+    axios.post(`${base_url}/api/v1/users/playlist/${playlistId}`,{}, {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -46,7 +46,6 @@ const Playlist = () => {
     .then((res)=>{
       console.log("Saved playlist", res.data)
       isPlaylistInWatchLater()
-      // setUser(res.data.data)
     })
     .catch((err)=>{
       console.error("Error Saving playlist",err)
@@ -54,14 +53,13 @@ const Playlist = () => {
   }
 
   const isPlaylistInWatchLater = ()=>{
-    axios.get(`http://localhost:8000/api/v1/users/playlist/${playlistId}`, {
+    axios.get(`${base_url}/api/v1/users/playlist/${playlistId}`, {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
     })
     .then((res)=>{
       console.log("is Already in playlist", res.data)
-      // setUser(res.data.data)
       setIsSaved(res.data.data.isAdded)
     })
     .catch((err)=>{

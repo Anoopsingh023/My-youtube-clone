@@ -17,26 +17,31 @@ const VideoPage = () => {
   const [isLikedByUser, setIsLikedByUser] = useState("");
   const [isDisliked, setIsDislike] = useState(false);
   const [views, setViews] = useState("");
-
-  const { addToWatchHistory } = useHistory();
+  const [isSaved, setIsSaved] = useState(false);
 
   const video = state?.video;
-  console.log("video-page", video);
+  // console.log("video-page", video);
+  const videoId = video._id;
 
   useEffect(() => {
     getChannelProfile();
     getTotalLikes();
     isVideoLiked();
     getvideoViews();
+    isVideoInWatchLater();
   }, [video.owner.username, video._id]);
 
   const getvideoViews = () => {
     axios
-      .put(`${base_url}/api/v1/videos/views/${video._id}`,{}, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      })
+      .put(
+        `${base_url}/api/v1/videos/views/${video._id}`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      )
       .then((res) => {
         console.log("Video views", res.data);
         setViews(res.data.data.views);
@@ -155,7 +160,43 @@ const VideoPage = () => {
     setIsDislike(!isDisliked);
   };
 
-  console.log("videoId", video._id);
+  const saveVideo = () => {
+    axios
+      .post(
+        `${base_url}/api/v1/videos/save/${videoId}`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Saved playlist", res.data);
+        isVideoInWatchLater();
+        // setUser(res.data.data)
+      })
+      .catch((err) => {
+        console.error("Error Saving playlist", err);
+      });
+  };
+
+  const isVideoInWatchLater = () => {
+    axios
+      .get(`${base_url}/api/v1/videos/save/${videoId}`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        console.log("is Already in playlist", res.data);
+        // setUser(res.data.data)
+        setIsSaved(res.data.data.isAdded);
+      })
+      .catch((err) => {
+        console.error("Error is already in  playlist", err);
+      });
+  };
 
   if (!video) return <p>Video not found</p>;
 
@@ -229,17 +270,23 @@ const VideoPage = () => {
               )}
             </p>
             <p className="text-sm cursor-pointer">
+              {isSaved ? (
+                <i onClick={saveVideo} class="fa-solid fa-bookmark pr-2"></i>
+              ) : (
+                <i onClick={saveVideo} class="fa-regular fa-bookmark pr-2"></i>
+              )}
+            </p>
+            {/* <p className="text-sm cursor-pointer">
               <i className="fa-solid fa-share"></i>
             </p>
             <p className="text-sm cursor-pointer">
               <i className="fa-solid fa-download"></i>
-            </p>
+            </p> */}
           </div>
         </div>
 
-        {/* Desktop layout remains unchanged */}
+        {/* Desktop layout  */}
         <div className="hidden sm:flex flex-col md:flex-row justify-between items-start md:items-center gap-3 my-4">
-
           <div className="flex items-center gap-3">
             <img
               onClick={() => handleProfileClick(video.owner)}
@@ -292,12 +339,35 @@ const VideoPage = () => {
                 )}
               </p>
             </div>
-            <p className="rounded-full px-4 py-1 bg-[#343434] cursor-pointer text-sm">
+            {/* <p className="rounded-full px-4 py-1 bg-[#343434] cursor-pointer text-sm">
               <i className="fa-solid fa-share pr-2"></i>Share
-            </p>
-            <p className="rounded-full px-4 py-1 bg-[#343434] cursor-pointer text-sm">
+            </p> */}
+            {isSaved ? (
+              <p
+                onClick={saveVideo}
+                className="rounded-full px-4 py-1 bg-[#343434] cursor-pointer text-sm"
+              >
+                <i
+                  // onClick={saveVideo}
+                  class="fa-solid fa-bookmark pr-2"
+                ></i>
+                Save
+              </p>
+            ) : (
+              <p
+                onClick={saveVideo}
+                className="rounded-full px-4 py-1 bg-[#343434] cursor-pointer text-sm"
+              >
+                <i
+                  // onClick={saveVideo}
+                  class="fa-regular fa-bookmark pr-2"
+                ></i>
+                Save
+              </p>
+            )}
+            {/* <p className="rounded-full px-4 py-1 bg-[#343434] cursor-pointer text-sm">
               <i className="fa-solid fa-download pr-2"></i>Download
-            </p>
+            </p> */}
           </div>
         </div>
 
