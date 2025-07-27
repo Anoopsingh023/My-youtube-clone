@@ -28,9 +28,9 @@ const useSubscription = (userId) => {
 
   useEffect(()=>{
     fetchSubscribedChannel()
-  })
+  },[])
 
-  return {subscribedChannels, refetchSubscription: fetchSubscribedChannel}
+  return {subscribedChannels}
 };
 
 export default useSubscription;

@@ -130,6 +130,7 @@ import useUserPlaylist from "../hooks/useUserPlaylist";
 import useUserVideos from "../hooks/useUserVideos";
 import { base_url } from "../../utils/constant";
 import useHistory from "../hooks/useHistory";
+import useSubscription from "../hooks/useSubscription";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -140,6 +141,7 @@ const Dashboard = () => {
   const { userVideo } = useUserVideos(userId);
   const { playlists } = useUserPlaylist(userId);
   const {history, addToWatchHistory, removevideo, clearHistory} = useHistory()
+  const {subscribedChannels} = useSubscription(userId)
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarVisible, setSidebarVisible] = useState(true);
@@ -153,7 +155,7 @@ const Dashboard = () => {
     useFilteredSortedVideos(videos, searchQuery);
 
   return (
-    <VideoContext.Provider value={{ filteredVideos, playlists, userVideo, history, addToWatchHistory, removevideo, clearHistory }}>
+    <VideoContext.Provider value={{ filteredVideos, playlists, userVideo, history, addToWatchHistory, removevideo, clearHistory, subscribedChannels }}>
       <div className="flex flex-col h-screen bg-black text-white">
         {/* Navbar */}
         <header className="sticky top-0 z-50 bg-black shadow-lg">
