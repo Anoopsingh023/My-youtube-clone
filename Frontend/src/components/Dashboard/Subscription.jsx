@@ -3,13 +3,13 @@ import axios from "axios";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
+import { base_url } from "../../utils/constant";
 
 const Subscription = () => {
   
   const navigate = useNavigate();
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const base_url = "http://localhost:8000/api/v1";
 
   useEffect(() => {
     const fetchSubscribedVideos = async () => {
