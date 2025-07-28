@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { Video } from "../models/video.model.js";
 import { User } from "../models/user.model.js";
+import { Subscription } from "../models/subscription.model.js";
 import {View} from "../models/views.model.js"
 import {
   deleteImageFromCloudinary,
@@ -403,8 +404,6 @@ const getWatchLaterVideos = asyncHandler(async (req, res) => {
   );
 });
 
-
-
 const isVideoInWatchLater = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   const { videoId } = req.params; // or req.query.playlistId if you prefer
@@ -436,6 +435,58 @@ const isVideoInWatchLater = asyncHandler(async (req, res) => {
     );
 });
 
+const getSubscribedChannelVideos = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json(new apiResponse(400, null, "Invalid user ID"));
+  }
+
+  const page  = parseInt(req.query.page, 10)  || 1;
+  const limit = parseInt(req.query.limit, 10) || 20;
+  const skip  = (page - 1) * limit;
+
+  // 1) Fetch the channels the user is subscribed to
+  const subs = await Subscription.find({ subscriber: userId }).select("channel -_id");
+  const channelIds = subs.map(s => s.channel);
+
+  if (channelIds.length === 0) {
+    return res.status(200).json(
+      new apiResponse(200, {
+        total: 0,
+        currentPage: page,
+        totalPages: 0,
+        videos: []
+      }, "No subscribed channels")
+    );
+  }
+
+  // 2) Query videos from those channels
+  const filter = {
+    owner: { $in: channelIds },
+    isPublished: true, // remove if you want drafts too
+  };
+
+  const [total, videos] = await Promise.all([
+    Video.countDocuments(filter),
+    Video.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .select("title thumbnail videoFile createdAt owner views")
+      .populate("owner", "fullName avatar username")
+  ]);
+
+  return res.status(200).json(
+    new apiResponse(200, {
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      videos
+    }, "Subscribed channel videos fetched successfully")
+  );
+});
+
 export {
   getAllVideo,
   publishVideo,
@@ -447,5 +498,6 @@ export {
   getTotalViewsOnVideo,
   toggleVideoInWatchLater,
   getWatchLaterVideos,
-  isVideoInWatchLater
+  isVideoInWatchLater,
+  getSubscribedChannelVideos
 };

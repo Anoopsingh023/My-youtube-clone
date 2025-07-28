@@ -11,6 +11,7 @@ import {
   toggleVideoInWatchLater,
   getWatchLaterVideos,
   isVideoInWatchLater,
+  getSubscribedChannelVideos
 } from "../controllers/video.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -49,5 +50,7 @@ router
   .get(isVideoInWatchLater);
 
 router.route("/watch-later").get(getWatchLaterVideos);
+
+router.route("/feed/subscribed").get(getSubscribedChannelVideos)
 
 export default router;
