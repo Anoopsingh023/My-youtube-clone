@@ -172,7 +172,7 @@ const updateVideo = asyncHandler(async (req, res) => {
 const getVideoById = asyncHandler(async (req, res) => {
   // const {videoId} = req.params
 
-  const video = await Video.findById(req.params.videoId);
+  const video = await Video.findById(req.params.videoId).populate("owner", "username fullName avatar");
   // console.log("Video", video)
   return res
     .status(200)
