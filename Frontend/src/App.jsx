@@ -19,9 +19,9 @@ import Subscription from "./components/Dashboard/Subscription";
 import LikedVideos from "./components/Dashboard/LikedVideos";
 import WatchLater from "./components/Dashboard/WatchLater";
 import SavedPlaylist from "./components/Dashboard/SavedPlaylist";
-import Cources from "./components/Dashboard/Cources";
 import History from "./components/Dashboard/History";
 import Playlist from "./components/Dashboard/Playlist";
+import WatchPage from "./components/Dashboard/WatchPage";
 
 const appRouter = createBrowserRouter([
   {
@@ -45,12 +45,12 @@ const appRouter = createBrowserRouter([
       { path: ":username", element: <ChannelProfile /> },
       { path: "upload-video", element: <UploadVideo /> },
       { path: "video-page", element: <VideoPage /> },
+      { path: "video/:videoId", element: <WatchPage /> },
       { path: "short-page", element: <ShortPage /> },
       { path: "subscription", element: <Subscription /> },
       { path: "liked-videos", element: <LikedVideos /> },
       { path: "watch-later", element: <WatchLater /> },
       { path: "saved-playlist", element: <SavedPlaylist /> },
-      { path: "cources", element: <Cources /> },
       { path: "history", element: <History /> },
       { path: "playlist/:playlistId", element: <Playlist /> },
     ],
