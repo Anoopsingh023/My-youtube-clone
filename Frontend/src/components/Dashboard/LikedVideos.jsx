@@ -25,8 +25,8 @@ const LikedVideos = () => {
     fetchLikedVideos();
   }, []);
 
-  const handleClick = (video) => {
-    navigate("/dashboard/video-page", { state: { video } });
+  const handleClick = (videoId) => {
+    navigate(`/dashboard/video/${videoId}`);
   };
 
   const handleProfileClick = (owner) => {
@@ -47,7 +47,7 @@ const LikedVideos = () => {
               className="flex flex-col md:flex-row gap-3 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md rounded-xl overflow-hidden cursor-pointer"
             >
               <img
-                onClick={() => handleClick(video)}
+                onClick={() => handleClick(video._id)}
                 src={video.thumbnail}
                 alt={video.title}
                 className="w-full md:w-60 h-36 object-cover"
@@ -55,7 +55,7 @@ const LikedVideos = () => {
 
               <div className="flex-1 p-3">
                 <h2
-                  onClick={() => handleClick(video)}
+                  onClick={() => handleClick(video._id)}
                   className="text-lg font-medium text-gray-800 dark:text-gray-100"
                 >
                   {video.title}

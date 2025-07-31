@@ -26,11 +26,27 @@ const useSubscription = (userId) => {
       });
   };
 
+  const toggleSubscription = async (userId) => {
+  try {
+    const res = await axios.post(`${base_url}/api/v1/subscriptions/c/${userId}`, {}, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    });
+    console.log("toggle subscription",res.data)
+    return res.data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+
   useEffect(()=>{
     fetchSubscribedChannel()
   },[])
 
-  return {subscribedChannels}
+  return {subscribedChannels, toggleSubscription:toggleSubscription}
 };
 
 export default useSubscription;

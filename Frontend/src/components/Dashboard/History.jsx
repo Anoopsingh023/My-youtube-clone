@@ -7,8 +7,8 @@ const History = () => {
 
   const navigate = useNavigate();
 
-  const handleClick = (video) => {
-    navigate("/dashboard/video-page", { state: { video } });
+  const handleClick = (videoId) => {
+    navigate(`/dashboard/video/${videoId}`);
   };
 
   const handleProfileClick = (owner) => {
@@ -39,7 +39,7 @@ const History = () => {
               className="flex flex-col sm:flex-row gap-4 items-start bg-transparent group hover:bg-[#4c4b4b16] transition-all duration-300 p-2 rounded-lg"
             >
               <img
-                onClick={() => handleClick(video)}
+                onClick={() => handleClick(video._id)}
                 src={video.thumbnail}
                 alt="thumbnail"
                 className="w-full sm:w-56 h-36 object-cover rounded-md cursor-pointer"
@@ -47,7 +47,7 @@ const History = () => {
 
               <div className="flex-1">
                 <h3
-                  onClick={() => handleClick(video)}
+                  onClick={() => handleClick(video._id)}
                   className="text-md sm:text-lg font-medium line-clamp-2 cursor-pointer"
                 >
                   {video.title}

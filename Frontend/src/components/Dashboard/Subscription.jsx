@@ -32,8 +32,8 @@ const Subscription = () => {
   }, []);
 
   
-    const handleClick = (video) => {
-      navigate("/dashboard/video-page", { state: { video } });
+    const handleClick = (videoId) => {
+      navigate(`/dashboard/video/${videoId}`);
     };
   
     const handleProfileClick = (owner) => {
@@ -50,7 +50,7 @@ const Subscription = () => {
           className="  p-2 text-white cursor-pointer rounded-2xl  duration-600"
         >
           <img
-            onClick={() => handleClick(video)}
+            onClick={() => handleClick(video._id)}
             className="h-54 w-full object-cover rounded-xl"
             src={video.thumbnail}
             alt="thumbnail"
@@ -63,7 +63,7 @@ const Subscription = () => {
               alt="avatar"
             />
             <div className="w-[90%] font-medium ">
-              <h2 onClick={() => handleClick(video)} className="text-xl">
+              <h2 onClick={() => handleClick(video._id)} className="text-xl">
                 {video.title}
               </h2>
               <h2
@@ -73,9 +73,9 @@ const Subscription = () => {
                 {video.owner.fullName}
               </h2>
               <div className="flex flex-row gap-1 items-center text-[#6e6e6e] ">
-                <h2 onClick={() => handleClick(video)}>{video.views} views</h2>
-                <p onClick={() => handleClick(video)}>&#x2022;</p>
-                <div onClick={() => handleClick(video)}>
+                <h2 onClick={() => handleClick(video._id)}>{video.views} views</h2>
+                <p onClick={() => handleClick(video._id)}>&#x2022;</p>
+                <div onClick={() => handleClick(video._id)}>
                   {video.createdAt ? (
                     <p>
                       {formatDistanceToNow(new Date(video.createdAt), {

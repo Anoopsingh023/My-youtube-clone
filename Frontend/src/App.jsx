@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import Home from "./components/Dashboard/Home";
 import ChannelProfile from "./components/Dashboard/ChannelProfile";
 import UploadVideo from "./components/Dashboard/UploadVideo";
-import VideoPage from "./components/Dashboard/VideoPage";
+// import VideoPage from "./components/Dashboard/VideoPage";
 import { Channel } from "./components/userChannel/Channel";
 import UserVideos from "./components/userChannel/UserVideos"
 import UserPlaylist from "./components/userChannel/UserPlaylist";
@@ -44,7 +44,7 @@ const appRouter = createBrowserRouter([
       { path: "home", element: <Home /> },
       { path: ":username", element: <ChannelProfile /> },
       { path: "upload-video", element: <UploadVideo /> },
-      { path: "video-page", element: <VideoPage /> },
+      // { path: "video-page", element: <VideoPage /> },
       { path: "video/:videoId", element: <WatchPage /> },
       { path: "short-page", element: <ShortPage /> },
       { path: "subscription", element: <Subscription /> },
