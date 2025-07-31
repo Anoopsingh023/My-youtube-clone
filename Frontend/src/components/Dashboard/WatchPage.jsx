@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useVideo from "../hooks/useVideo";
 import { useParams } from "react-router-dom";
 import { motion } from "motion/react";
@@ -10,6 +10,8 @@ import useLike from "../hooks/useLike";
 import useSave from "../hooks/useSave";
 import useChannel from "../hooks/useChannel";
 import useSubscription from "../hooks/useSubscription";
+import axios from "axios";
+import { base_url } from "../../utils/constant";
 
 const WatchPage = () => {
   const { videoId } = useParams();
@@ -25,6 +27,31 @@ const WatchPage = () => {
   const { toggleSubscription } = useSubscription(userId);
 
   const [isDisliked, setIsDislike] = useState(false);
+  const [views, setViews] = useState("");
+
+  useEffect(()=>{
+    getvideoViews()
+  },[videoId])
+
+  const getvideoViews = () => {
+    axios
+      .put(
+        `${base_url}/api/v1/videos/views/${videoId}`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Video views", res.data);
+        setViews(res.data.data.views);
+      })
+      .catch((err) => {
+        console.log("Video views error", err);
+      });
+  };
 
   const handleDiskie = () => {
     setIsDislike(!isDisliked);
@@ -210,7 +237,7 @@ const WatchPage = () => {
 
         <div className="bg-[#3f3f3f] p-3 rounded-xl mb-6 text-sm ">
           <div className="flex gap-4 mb-2">
-            <p>{videoById.views} views</p>
+            <p>{views}{" "} views</p>
             <p>{moment(videoById.createdAt).fromNow()}</p>
           </div>
           <p>{videoById.description}</p>
