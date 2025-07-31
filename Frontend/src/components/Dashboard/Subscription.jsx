@@ -15,7 +15,7 @@ const Subscription = () => {
     const fetchSubscribedVideos = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${base_url}/videos/feed/subscribed`, {
+        const res = await axios.get(`${base_url}api/v1/videos/feed/subscribed`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
