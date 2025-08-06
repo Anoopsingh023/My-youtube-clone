@@ -3,6 +3,7 @@ import { useUserVideos } from "../context/VideoContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { base_url } from "../../utils/constant";
+import {upload2} from "../../assets/upload2.svg"
 
 const UserVideos = () => {
   const navigate = useNavigate();
@@ -121,7 +122,7 @@ const UserVideos = () => {
           <img
             onClick={handleUploadVideo}
             className="h-50 w-50 m-4 cursor-pointer"
-            src="../../src/assets/upload2.svg"
+            src={upload2}
             alt=""
           />
           <div className="mx-4  flex justify-center px-4 py-2 cursor-pointer hover:bg-[#272626] duration-300 rounded-xl">

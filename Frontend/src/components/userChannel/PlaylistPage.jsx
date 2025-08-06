@@ -4,6 +4,7 @@ import { useUserVideos } from "../context/VideoContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { base_url } from "../../utils/constant";
+import {plus} from "../../assets/plus.svg"
 
 const PlaylistPage = () => {
   const { filteredVideos } = useUserVideos();
@@ -141,7 +142,7 @@ const PlaylistPage = () => {
           <img
             onClick={() => setopen(true)}
             className="h-50 w-50 m-4 cursor-pointer"
-            src="../../src/assets/plus.svg"
+            src={plus}
             alt=""
           />
           <div className="mx-4  flex justify-center px-4 py-2 cursor-pointer hover:bg-[#272626] duration-300 rounded-xl">

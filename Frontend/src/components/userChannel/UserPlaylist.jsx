@@ -4,6 +4,7 @@ import { useUserPlaylist } from "../context/VideoContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { base_url } from "../../utils/constant";
+import {upload2} from "../../assets/upload2.svg"
 
 const UserPlaylist = () => {
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ const UserPlaylist = () => {
           <img
             onClick={() => setopen(true)}
             className="h-40 w-40  cursor-pointer "
-            src="../../src/assets/upload2.svg"
+            src={upload2}
             alt=""
           />
           <div className="mt-2  flex justify-center text-2xl px-4 py-2 cursor-pointer hover:bg-[#272626] duration-300 rounded-xl">
