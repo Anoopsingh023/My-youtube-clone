@@ -4,7 +4,7 @@ import { useUserPlaylist } from "../context/VideoContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { base_url } from "../../utils/constant";
-import {upload2} from "../../assets/upload2.svg"
+import upload2 from "../../assets/upload2.svg"
 
 const UserPlaylist = () => {
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ import { useUserVideos } from "../context/VideoContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { base_url } from "../../utils/constant";
-import {upload2} from "../../assets/upload2.svg"
+import upload2 from "../../assets/upload2.svg"
 
 const UserVideos = () => {
   const navigate = useNavigate();

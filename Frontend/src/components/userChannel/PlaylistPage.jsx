@@ -4,7 +4,7 @@ import { useUserVideos } from "../context/VideoContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { base_url } from "../../utils/constant";
-import {plus} from "../../assets/plus.svg"
+import plus from "../../assets/plus.svg"
 
 const PlaylistPage = () => {
   const { filteredVideos } = useUserVideos();
