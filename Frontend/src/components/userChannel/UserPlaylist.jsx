@@ -37,12 +37,12 @@ const UserPlaylist = () => {
         },
       })
       .then((res) => {
-        console.log("Updated Playlist", res.data);
+        // console.log("Updated Playlist", res.data);
         refetchPlaylist();
         toast("Playlist Updated Successfully");
       })
       .catch((err) => {
-        console.error("Update playlist error", err);
+        // console.error("Update playlist error", err);
         toast.error("playlist update failed");
       });
   };

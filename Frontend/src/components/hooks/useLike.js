@@ -19,7 +19,7 @@ const useLike = (videoId) => {
         setLikes(res.data.data[0].likesCount);
       })
       .catch((err) => {
-        console.log("get Total Likes Error", err);
+        // console.log("get Total Likes Error", err);
       });
   };
 
@@ -41,7 +41,7 @@ const useLike = (videoId) => {
       })
       .catch((err) => {
         console.log(err);
-        toast.error("Login required");
+        toast.error("Please Login");
       });
   };
 
@@ -57,8 +57,7 @@ const useLike = (videoId) => {
         setIsLikedByUser(res.data.data.isLiked);
       })
       .catch((err) => {
-        console.log("isLikedError", err);
-        // toast.error("Login not required");
+        // console.log("isLikedError", err);
       });
   };
   useEffect(() => {

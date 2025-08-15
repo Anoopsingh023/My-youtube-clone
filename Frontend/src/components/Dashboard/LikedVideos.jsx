@@ -14,10 +14,10 @@ const LikedVideos = () => {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       });
-      console.log("Likes", res.data);
+      // console.log("Likes", res.data);
       setLikedVideos(res.data.data.likedVideos);
     } catch (error) {
-      console.error("liked video error", error);
+      // console.error("liked video error", error);
     }
   };
   

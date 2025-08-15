@@ -18,13 +18,13 @@ const SavedPlaylist = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      console.log("Saved Playlist:", res.data);
+      // console.log("Saved Playlist:", res.data);
       setSavedplaylists(res.data.data);
     } catch (error) {
-      console.error(
-        "Error fetching saved playlist",
-        error.response?.data || error.message
-      );
+      // console.error(
+      //   "Error fetching saved playlist",
+      //   error.response?.data || error.message
+      // );
     }
   };
 

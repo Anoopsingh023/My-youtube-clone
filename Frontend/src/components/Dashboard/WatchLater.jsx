@@ -7,6 +7,7 @@ import { base_url } from "../../utils/constant";
 const WatchLater = () => {
   const [watchLaterVideos, setWatchlaterVideos] = useState([]);
   const navigate = useNavigate();
+
   const fetchWatchLaterVideos = async () => {
     try {
       // setLoading(true);
@@ -16,10 +17,10 @@ const WatchLater = () => {
         },
       });
       const userData = res.data.data || [];
-      console.log("watch later videos", res.data);
+      // console.log("watch later videos", res.data);
       setWatchlaterVideos(userData || []);
     } catch (err) {
-      console.error("User video error", err);
+      // console.error("User video error", err);
     } finally {
       // setLoading(false);
     }
@@ -30,7 +31,7 @@ const WatchLater = () => {
   }, []);
 
   const handleClick = (video) => {
-    navigate("/dashboard/video-page", { state: { video } });
+    navigate(`/dashboard/video/${video._id}`);
   };
 
   const handleProfileClick = (owner) => {

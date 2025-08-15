@@ -20,11 +20,11 @@ const useUserVideos = (userId) => {
         }
       );
       const userData = res.data.data[0] || [];
-      console.log("User video by userId", res.data)
+      // console.log("User video by userId", res.data)
       setVideos(userData.video || [])
       setUserVideo(userData.video || [])
     } catch (err) {
-      console.error("User video error", err);
+      // console.error("User video error", err);
       setError(err);
     } finally {
       setLoading(false);

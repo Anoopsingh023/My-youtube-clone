@@ -41,7 +41,7 @@ const Comment = (video) => {
         setContent(""); // Clear input box
       })
       .catch((err) => {
-        toast("Somthing went wrong");
+        toast.error("Somthing went wrong");
       });
   };
 
@@ -66,7 +66,7 @@ const Comment = (video) => {
       })
       .catch((err) => {
         // console.log("Error adding comment",err);
-        toast("Please login");
+        toast.error("Please login");
       });
   };
 
@@ -93,7 +93,7 @@ const Comment = (video) => {
       })
       .catch((err) => {
         // console.log("Toggle comment likes error", err);
-        toast("Please login");
+        toast.error("Please Login");
       });
   };
 

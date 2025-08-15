@@ -71,7 +71,7 @@ const WatchPage = () => {
     const profileResult = await getChannelProfile(username);
   } catch (err) {
     // console.error("❌ Error in handleSubscription", err);
-    toast("Please Ligin")
+    toast.error("Please Ligin")
   }
 
 };
@@ -222,18 +222,18 @@ const WatchPage = () => {
             </div>
             {isSaved ? (
               <p
-                onClick={saveVideo}
+                onClick={()=>saveVideo(videoId)}
                 className="rounded-full px-4 py-1 bg-[#343434] cursor-pointer text-sm"
               >
-                <i onClick={saveVideo} class="fa-solid fa-bookmark pr-2"></i>
+                <i class="fa-solid fa-bookmark pr-2"></i>
                 Saved
               </p>
             ) : (
               <p
-                onClick={saveVideo}
+                onClick={()=>saveVideo(videoId)}
                 className="rounded-full px-4 py-1 bg-[#343434] cursor-pointer text-sm"
               >
-                <i onClick={saveVideo} class="fa-regular fa-bookmark pr-2"></i>
+                <i  class="fa-regular fa-bookmark pr-2"></i>
                 Save
               </p>
             )}

@@ -18,11 +18,11 @@ const useRandomVideos = () => {
           },
         }
       );
-      console.log("Random Video", res.data)
+      // console.log("Random Video", res.data)
       const userData = res.data.data || [];
       setVideos(userData.videos || []);
     } catch (err) {
-      console.error("User video error", err);
+      // console.error("User video error", err);
       setError(err);
     } finally {
       setLoading(false);

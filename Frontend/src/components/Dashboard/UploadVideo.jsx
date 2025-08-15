@@ -38,12 +38,12 @@ const UploadVideo = () => {
       }
     })
     .then((res)=>{
-      console.log(res.data)
+      // console.log(res.data)
       setLoading(false)
       toast(res.data.message)
     })
     .catch((err)=>{
-      console.log(err)
+      // console.log(err)
       setLoading(false)
       toast.error(err.response.statusText)
     })

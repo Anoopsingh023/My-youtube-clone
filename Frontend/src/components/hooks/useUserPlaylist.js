@@ -23,7 +23,6 @@ const useUserPlaylist = (userId) => {
   }
 };
 
-
   const handleCreateplaylist = (name, description) => {
     axios
       .post(

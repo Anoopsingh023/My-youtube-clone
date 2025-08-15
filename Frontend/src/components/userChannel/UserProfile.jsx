@@ -14,15 +14,6 @@ const UserProfile = () => {
   const [imageToUpload, setImageToUpload] = useState(null);
 
   useEffect(() => {
-    // axios.get(`${base_url}/api/v1/users/current-user`, { withCredentials: true }).then((res) => {
-    //   const { avatar, coverImage, name, userName, email } = res.data;
-    //   console.log("Current user", res.data)
-    //   if (avatar) setPreviewAvatar(avatar);
-    //   if (coverImage) setPreviewCover(coverImage);
-    //   setFullName(name);
-    //   setUsername(userName);
-    //   setEmail(email);
-    // });
     fetchCurrentUser();
   }, []);
 
@@ -34,7 +25,7 @@ const UserProfile = () => {
         },
       })
       .then((res) => {
-        console.log("Current user", res.data);
+        // console.log("Current user", res.data);
         const { avatar, coverImage, fullName, username, email } = res.data.data;
         // console.log("Current user", res.data)
         if (avatar) setPreviewAvatar(avatar);
@@ -44,7 +35,7 @@ const UserProfile = () => {
         setEmail(email);
       })
       .catch((err) => {
-        console.error("Error Current user", err);
+        // console.error("Error Current user", err);
       });
   };
 
@@ -72,7 +63,7 @@ const UserProfile = () => {
       setImageToUpload(null);
       alert(`${activeModal} updated!`);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       alert("Error uploading image.");
     }
   };

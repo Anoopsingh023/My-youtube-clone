@@ -17,7 +17,7 @@ const User = () => {
   const userName = localStorage.getItem("userName");
   const userId = localStorage.getItem("userId");
 
-  const { history, removevideo, clearHistory } = useHistory();
+  const { history } = useHistory();
   const [SavedPlaylists, setSavedplaylists] = useState([]);
   const [likedVideos, setLikedVideos] = useState([]);
   const [isLiked, setIsLiked] = useState(false)
@@ -31,13 +31,13 @@ const User = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      console.log("Saved Playlist:", res.data);
+      // console.log("Saved Playlist:", res.data);
       setSavedplaylists(res.data.data);
     } catch (error) {
-      console.error(
-        "Error fetching saved playlist",
-        error.response?.data || error.message
-      );
+      // console.error(
+      //   "Error fetching saved playlist",
+      //   error.response?.data || error.message
+      // );
     }
   };
 
@@ -49,10 +49,10 @@ const User = () => {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       });
-      console.log("Likes", res.data);
+      // console.log("Likes", res.data);
       setLikedVideos(res.data.data.likedVideos);
     } catch (error) {
-      console.error("liked video error", error);
+      // console.error("liked video error", error);
     }
   };
   

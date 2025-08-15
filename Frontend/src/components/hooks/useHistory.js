@@ -16,13 +16,13 @@ const useHistory = () => {
           },
         }
       );
-      console.log("Added to watch history:", res.data);
+      // console.log("Added to watch history:", res.data);
       fetchHistory();
     } catch (error) {
-      console.error(
-        "Error adding to history:",
-        error.response?.data || error.message
-      );
+      // console.error(
+      //   "Error adding to history:",
+      //   error.response?.data || error.message
+      // );
     }
   };
 
@@ -33,10 +33,10 @@ const useHistory = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      console.log("Watch history", res.data);
+      // console.log("Watch history", res.data);
       setHistory(res.data.data.reverse()); // show latest first
     } catch (error) {
-      console.error("Error fetching history:", error);
+      // console.error("Error fetching history:", error);
     } finally {
       //   setLoading(false);
     }
@@ -57,7 +57,7 @@ const useHistory = () => {
       });
       setHistory(history.filter((item) => item.video._id !== videoId));
     } catch (error) {
-      console.error("Error removing video:", error);
+      // console.error("Error removing video:", error);
     }
   };
 
@@ -71,7 +71,7 @@ const useHistory = () => {
       });
       setHistory([]);
     } catch (error) {
-      console.error("Error clearing history:", error);
+      // console.error("Error clearing history:", error);
     }
   };
 

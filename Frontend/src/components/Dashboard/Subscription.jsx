@@ -24,10 +24,10 @@ const Subscription = () => {
             },
           }
         );
-        console.log("Subscribed channel video", res.data);
+        // console.log("Subscribed channel video", res.data);
         setVideos(res.data.data.videos);
       } catch (err) {
-        console.error("Failed to load subscribed videos", err);
+        // console.error("Failed to load subscribed videos", err);
       } finally {
         setLoading(false);
       }

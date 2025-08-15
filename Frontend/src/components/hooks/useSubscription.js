@@ -22,7 +22,7 @@ const useSubscription = (userId) => {
         setSubscribedChannels(channels);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
@@ -33,10 +33,10 @@ const useSubscription = (userId) => {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
     });
-    console.log("toggle subscription",res.data)
+    // console.log("toggle subscription",res.data)
     return res.data;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     throw err;
   }
 };

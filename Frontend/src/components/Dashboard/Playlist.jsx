@@ -10,7 +10,6 @@ const Playlist = () => {
   const [user, setUser] = useState("");
   const [isSaved, setIsSaved] = useState(false);
   const navigate = useNavigate();
-
   const { state } = useLocation();
   const playlist = state?.playlist;
   console.log("Playlist on playlist", playlist);
@@ -29,11 +28,11 @@ const Playlist = () => {
         },
       })
       .then((res) => {
-        console.log("User on playlist", res.data);
+        // console.log("User on playlist", res.data);
         setUser(res.data.data);
       })
       .catch((err) => {
-        console.error("Error user on playlist", err);
+        // console.error("Error user on playlist", err);
       });
   };
 
@@ -49,11 +48,11 @@ const Playlist = () => {
         }
       )
       .then((res) => {
-        console.log("Saved playlist", res.data);
+        // console.log("Saved playlist", res.data);
         isPlaylistInWatchLater();
       })
       .catch((err) => {
-        console.error("Error Saving playlist", err);
+        // console.error("Error Saving playlist", err);
       });
   };
 
@@ -65,11 +64,11 @@ const Playlist = () => {
         },
       })
       .then((res) => {
-        console.log("is Already in playlist", res.data);
+        // console.log("is Already in playlist", res.data);
         setIsSaved(res.data.data.isAdded);
       })
       .catch((err) => {
-        console.error("Error is already in  playlist", err);
+        // console.error("Error is already in  playlist", err);
       });
   };
 

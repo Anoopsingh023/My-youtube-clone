@@ -13,12 +13,12 @@ const useChannel = (username) => {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
     });
-    console.log("channel profile",res.data)
+    // console.log("channel profile",res.data)
     setUser(res.data.data);
     return res.data.data;
   } catch (err) {
-    console.error(err);
-    throw err;
+    // console.error(err);
+    // throw err;
   }
 };
 
