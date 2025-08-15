@@ -18,7 +18,6 @@ const UpdateUserVideo = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const video = state?.video;
-  //   console.log("Video passed from userVideo", video);
 
   useEffect(() => {
     setDescription(video.description);
@@ -71,18 +70,19 @@ const UpdateUserVideo = () => {
         },
       })
       .then((res) => {
-        console.log("Update video", res.data);
+        // console.log("Update video", res.data);
         setIsLoading(false);
-        alert("Video updated successfully!");
+        toast("Video updated successfully!");
         refetch();
         navigate(-1); // Go back to previous page
       })
       .catch((err) => {
-        console.error("Update error:", err);
+        // console.error("Update error:", err);
         setIsLoading(false);
-        alert("Failed to update video");
+        toast.error("Failed to update video");
       });
   };
+
   return (
     <div className="p-6 max-w-2xl mx-auto text-white">
       <h2 className="text-2xl font-semibold mb-6 text-center">✏️ Edit Video</h2>

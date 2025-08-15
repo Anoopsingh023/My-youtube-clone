@@ -1,26 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { base_url } from "../../utils/constant";
+import { toast } from "react-toastify";
 
 const useUserPlaylist = (userId) => {
   const [playlists, setPlaylists] = useState([]);
+  const token = localStorage.getItem("token");
 
-  const fetchAllPlaylist = () => {
-    axios
-      .get(`${base_url}/api/v1/playlists/user/${userId}`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        console.log("User Playlist by userId", res.data.data);
-        const userPlaylist = res.data || [];
-        setPlaylists(userPlaylist.data);
-      })
-      .catch((err) => {
-        console.error("User Playlist by userId error ", err);
-      });
-  };
+  const fetchAllPlaylist = async () => {
+  let data;
+  try {
+    const res = await axios.get(
+      `${base_url}/api/v1/playlists/user/${userId}`,
+      {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }
+    );
+    data = res.data;
+    setPlaylists(data?.data || []);
+  } catch (err) {
+    // toast("Something went wrong while loading playlist");
+  }
+};
+
 
   const handleCreateplaylist = (name, description) => {
     axios
@@ -37,11 +39,13 @@ const useUserPlaylist = (userId) => {
         }
       )
       .then((res) => {
-        console.log("Playlist created", res.data);
+        // console.log("Playlist created", res.data);
         fetchAllPlaylist();
+        toast("Playlist created successfully")
       })
       .catch((err) => {
-        console.error("Error create playlist", err);
+        // console.error("Error create playlist", err);
+        toast.error("failed to create playlist")
       });
   };
 

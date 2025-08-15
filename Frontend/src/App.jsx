@@ -22,6 +22,7 @@ import SavedPlaylist from "./components/Dashboard/SavedPlaylist";
 import History from "./components/Dashboard/History";
 import Playlist from "./components/Dashboard/Playlist";
 import WatchPage from "./components/Dashboard/WatchPage";
+import User from "./components/Dashboard/User";
 
 const appRouter = createBrowserRouter([
   {
@@ -52,6 +53,8 @@ const appRouter = createBrowserRouter([
       { path: "watch-later", element: <WatchLater /> },
       { path: "saved-playlist", element: <SavedPlaylist /> },
       { path: "history", element: <History /> },
+      // { path: "upload-video", element: <UploadVideo /> },
+      { path: "feed/you", element: <User /> },
       { path: "playlist/:playlistId", element: <Playlist /> },
     ],
   },

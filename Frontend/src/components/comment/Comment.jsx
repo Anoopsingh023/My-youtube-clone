@@ -1,62 +1,56 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import {base_url} from "../../utils/constant"
+import { base_url } from "../../utils/constant";
+import { toast } from "react-toastify";
+import { EllipsisVertical } from "lucide-react";
 
 const Comment = (video) => {
   const [comments, setComments] = useState([]);
   const [totalComment, setTotalComment] = useState("");
   const [content, setContent] = useState("");
   const [sortBy, setSortBy] = useState("des");
-  const [isLikedByUser, setIsLikedByUser] = useState(false);
-  const [likedComments, setLikedComments] = useState("");
+  const [openMenuId, setOpenMenuId] = useState(false);
 
- useEffect(() => {
-  if (video?.message?._id) {
-    getVideoComments();
-  }
-}, [video?.message?._id, sortBy]);
+  useEffect(() => {
+    if (video?.message?._id) {
+      getVideoComments();
+    }
+  }, [video?.message?._id, sortBy]);
 
-  const getVideoComments = () => {
-  const token = localStorage.getItem("token");
   const videoId = video?.message?._id;
 
-  if (!videoId) {
-    console.warn("Video ID is missing");
-    return;
-  }
+  const getVideoComments = () => {
+    const token = localStorage.getItem("token");
 
-  axios
-    .get(`${base_url}/api/v1/comments/${videoId}`, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    })
-    .then((res) => {
-      const { enrichedComments, totalComment } = res.data.data;
-      // console.log("new ",res.data)
+    if (!videoId) {
+      console.warn("Video ID is missing");
+      return;
+    }
 
-      console.log("Video Comments:", enrichedComments);
-      console.log("Total Comments:", totalComment);
-
-      setTotalComment(totalComment);
-
-      const sortedComments = sortBy === "asc" ? enrichedComments : [...enrichedComments].reverse();
-      setComments(sortedComments);
-
-      setContent(""); // Clear input box
-    })
-    .catch((err) => {
-      console.error("Error fetching video comments:", err);
-    });
-};
+    axios
+      .get(`${base_url}/api/v1/comments/v/${videoId}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+      .then((res) => {
+        const { enrichedComments, totalComment } = res.data.data;
+        setTotalComment(totalComment);
+        const sortedComments =
+          sortBy === "asc" ? enrichedComments : [...enrichedComments].reverse();
+        setComments(sortedComments);
+        setContent(""); // Clear input box
+      })
+      .catch((err) => {
+        toast("Somthing went wrong");
+      });
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
 
     axios
       .post(
-        `${base_url}/api/v1/comments/${video.message._id}`,
+        `${base_url}/api/v1/comments/v/${video.message._id}`,
         {
           content: content,
         },
@@ -67,11 +61,12 @@ const Comment = (video) => {
         }
       )
       .then((res) => {
-        console.log("comment", res.data);
+        // console.log("comment", res.data);
         getVideoComments();
       })
       .catch((err) => {
-        console.log(err);
+        // console.log("Error adding comment",err);
+        toast("Please login");
       });
   };
 
@@ -91,16 +86,16 @@ const Comment = (video) => {
         }
       )
       .then((res) => {
-        console.log("Toggle Comment's Like", res.data);
+        // console.log("Toggle Comment's Like", res.data);
         // checkAllCommentLikes()
-        getVideoComments()
+        getVideoComments();
         // setIsLiked(!isLiked)
       })
       .catch((err) => {
-        console.log("Toggle comment likes error", err);
+        // console.log("Toggle comment likes error", err);
+        toast("Please login");
       });
   };
-
 
   const handleCommentLikes = (commentId) => {
     toggleCommentLike(commentId);
@@ -172,29 +167,58 @@ const Comment = (video) => {
                 src={comment.owner.avatar}
                 alt=""
               />
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col w-full">
                 <div className="flex flex-row gap-2">
                   <h4>{comment.owner.username}</h4>
-                  <div className="text-sm text-gray-400">
-                    {comment.createdAt ? (
-                      <p>
-                        {formatDistanceToNow(new Date(comment.createdAt), {
-                          addSuffix: true,
-                        }).replace(/^about /, "")}
-                      </p>
-                    ) : (
-                      <p>Unknown time</p>
-                    )}
+                  <div className="flex flex-row justify-between w-full  pr-5 ">
+                    <div className="text-sm text-gray-400">
+                      {comment.createdAt ? (
+                        <p>
+                          {formatDistanceToNow(new Date(comment.createdAt), {
+                            addSuffix: true,
+                          }).replace(/^about /, "")}
+                        </p>
+                      ) : (
+                        <p>Unknown time</p>
+                      )}
+                    </div>
+                    {/* Menu icon & popup */}
+                    {/* <div className="relative">
+                      <EllipsisVertical
+                        onClick={() =>
+                          setOpenMenuId((prev) =>
+                            prev === comment._id ? null : comment._id
+                          )
+                        }
+                        className="p-1 hover:bg-[#535353] rounded-full cursor-pointer"
+                        size={25}
+                      />
+                      {openMenuId === comment._id && (
+                        <div className="absolute top-6 -right-8 bg-[#86848474] w-20 z-50  rounded shadow-lg">
+                          <button className="block w-full text-left px-3 py-1 hover:bg-[#4a4a4a] rounded cursor-pointer">
+                            Edit
+                          </button>
+                          <button className="block w-full text-left px-2 py-1 hover:bg-[#4a4a4a] rounded cursor-pointer">
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div> */}
                   </div>
                 </div>
                 <p>{comment.content}</p>
                 <div className="flex flex-row gap-5">
-                  <p onClick={() => handleCommentLikes(comment._id)} className="cursor-pointer mx-1">
-                    {comment.isLiked ?(<i class="fa-solid fa-thumbs-up"></i>):(<i class="fa-regular fa-thumbs-up"></i>)} {comment.likeCount || 0}
+                  <p
+                    onClick={() => handleCommentLikes(comment._id)}
+                    className="cursor-pointer mx-1"
+                  >
+                    {comment.isLiked ? (
+                      <i class="fa-solid fa-thumbs-up"></i>
+                    ) : (
+                      <i class="fa-regular fa-thumbs-up"></i>
+                    )}{" "}
+                    {comment.likeCount || 0}
                   </p>
-                  {/* <p onClick={() => handleCommentLikes(comment._id)} className="cursor-pointer">
-                    {likedComments[comment._id]?.isLiked ?(<i class="fa-solid fa-thumbs-up"></i>):(<i class="fa-regular fa-thumbs-up"></i>)}{likedComments[comment._id]?.likeCount || 0}
-                  </p> */}
 
                   <p className="cursor-pointer">
                     <i class="fa-regular fa-thumbs-down"></i>

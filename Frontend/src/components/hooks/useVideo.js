@@ -14,16 +14,16 @@ const useVideo = ( videoId) => {
       const res = await axios.get(
         `${base_url}/api/v1/videos/v/${videoId}`,
         {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
+          // headers: {
+          //   Authorization: "Bearer " + localStorage.getItem("token"),
+          // },
         }
       );
       const userData = res.data.data || [];
-    //   console.log("video by videoId", res.data)
+      console.log("video by videoId", res.data)
       setVideoById(userData || [])
     } catch (err) {
-    //   console.error("video by id error", err);
+      console.error("video by id error", err);
       setError(err);
     } finally {
       setLoading(false);

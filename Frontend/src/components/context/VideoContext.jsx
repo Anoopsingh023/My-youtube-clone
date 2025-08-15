@@ -6,7 +6,7 @@ export const useUserVideos = () => useContext(VideoContext);
 
 export const useRandomVideos = () => useContext(VideoContext);
 
-export const useUserPlaylist = () => useContext(VideoContext);
+// export const useUserPlaylist = () => useContext(VideoContext);
 
 export const useSubscription = () => useContext(VideoContext);
 

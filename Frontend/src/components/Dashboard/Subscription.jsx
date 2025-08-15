@@ -4,22 +4,26 @@ import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { base_url } from "../../utils/constant";
+import {SquarePlay}  from "lucide-react"
 
 const Subscription = () => {
-  
   const navigate = useNavigate();
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+   const [isloged, setisLoged] = useState(false);
 
   useEffect(() => {
     const fetchSubscribedVideos = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${base_url}/api/v1/videos/feed/subscribed`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const res = await axios.get(
+          `${base_url}/api/v1/videos/feed/subscribed`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         console.log("Subscribed channel video", res.data);
         setVideos(res.data.data.videos);
       } catch (err) {
@@ -31,67 +35,100 @@ const Subscription = () => {
     fetchSubscribedVideos();
   }, []);
 
-  
-    const handleClick = (videoId) => {
-      navigate(`/dashboard/video/${videoId}`);
-    };
-  
-    const handleProfileClick = (owner) => {
-      navigate(`/dashboard/${owner.username}`);
-    };
+  const handleClick = (videoId) => {
+    navigate(`/dashboard/video/${videoId}`);
+  };
+
+  const handleProfileClick = (owner) => {
+    navigate(`/dashboard/${owner.username}`);
+  };
+
+  const handleLogClick = () => {
+    navigate(`/login`);
+  };
+
+ 
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      setisLoged(true);
+    }
+  }, []);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-4 items-start">
-      {videos.map((video) => (
-        <motion.div
-          whileHover={{ scale: 1.025 }}
-          whileTap={{ scale: 0.95 }}
-          key={video._id}
-          className="  p-2 text-white cursor-pointer rounded-2xl  duration-600"
-        >
-          <img
-            onClick={() => handleClick(video._id)}
-            className="h-54 w-full object-cover rounded-xl"
-            src={video.thumbnail}
-            alt="thumbnail"
-          />
-          <div className="flex  p-2 items-center">
-            <img
-              onClick={() => handleProfileClick(video.owner)}
-              className="h-10 w-10 mr-3 rounded-4xl"
-              src={video.owner.avatar}
-              alt="avatar"
-            />
-            <div className="w-[90%] font-medium ">
-              <h2 onClick={() => handleClick(video._id)} className="text-xl">
-                {video.title}
-              </h2>
-              <h2
-                onClick={() => handleProfileClick(video.owner)}
-                className="text-[#6e6e6e] hover:text-white duration-300 w-fit "
-              >
-                {video.owner.fullName}
-              </h2>
-              <div className="flex flex-row gap-1 items-center text-[#6e6e6e] ">
-                <h2 onClick={() => handleClick(video._id)}>{video.views} views</h2>
-                <p onClick={() => handleClick(video._id)}>&#x2022;</p>
-                <div onClick={() => handleClick(video._id)}>
-                  {video.createdAt ? (
-                    <p>
-                      {formatDistanceToNow(new Date(video.createdAt), {
-                        addSuffix: true,
-                      })}
-                    </p>
-                  ) : (
-                    <p>Unknown time</p>
-                  )}
+    <>
+      {isloged ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-4 items-start">
+          {videos.map((video) => (
+            <motion.div
+              whileHover={{ scale: 1.025 }}
+              whileTap={{ scale: 0.95 }}
+              key={video._id}
+              className="  p-2 text-white cursor-pointer rounded-2xl  duration-600"
+            >
+              <img
+                onClick={() => handleClick(video._id)}
+                className="h-54 w-full object-cover rounded-xl"
+                src={video.thumbnail}
+                alt="thumbnail"
+              />
+              <div className="flex  p-2 items-center">
+                <img
+                  onClick={() => handleProfileClick(video.owner)}
+                  className="h-10 w-10 mr-3 rounded-4xl"
+                  src={video.owner.avatar}
+                  alt="avatar"
+                />
+                <div className="w-[90%] font-medium ">
+                  <h2
+                    onClick={() => handleClick(video._id)}
+                    className="text-xl"
+                  >
+                    {video.title}
+                  </h2>
+                  <h2
+                    onClick={() => handleProfileClick(video.owner)}
+                    className="text-[#6e6e6e] hover:text-white duration-300 w-fit "
+                  >
+                    {video.owner.fullName}
+                  </h2>
+                  <div className="flex flex-row gap-1 items-center text-[#6e6e6e] ">
+                    <h2 onClick={() => handleClick(video._id)}>
+                      {video.views} views
+                    </h2>
+                    <p onClick={() => handleClick(video._id)}>&#x2022;</p>
+                    <div onClick={() => handleClick(video._id)}>
+                      {video.createdAt ? (
+                        <p>
+                          {formatDistanceToNow(new Date(video.createdAt), {
+                            addSuffix: true,
+                          })}
+                        </p>
+                      ) : (
+                        <p>Unknown time</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </motion.div>
-      ))}
-    </div>
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        <div className="h-full flex flex-col justify-center items-center gap-4">
+          <SquarePlay size={100} />
+          <h2 className="text-4xl">Don't miss new videos</h2>
+          <p className="">
+            Sign in to see updates from your favourite YouTube channels
+          </p>
+          <button
+            onClick={handleLogClick}
+            className="border bg-[#232323] py-2 px-4 rounded-full cursor-pointer text-blue-400 hover:bg-[#4c9ed566]"
+          >
+            <i class="fa-regular fa-user"></i> Sign in
+          </button>
+        </div>
+      )}
+    </>
   );
 };
 

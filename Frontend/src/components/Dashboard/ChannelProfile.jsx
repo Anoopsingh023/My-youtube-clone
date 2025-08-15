@@ -8,6 +8,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import useUserVideos from "../hooks/useUserVideos";
 import { base_url } from "../../utils/constant";
+import cover from "../../assets/cover.jpg"
+import avatar from "../../assets/avatar.png"
+import { toast } from "react-toastify";
 
 const ChannelProfile = () => {
   const { username } = useParams();
@@ -20,49 +23,44 @@ const ChannelProfile = () => {
   }, [username]);
 
   const { playlists } = useUserPlaylist(userId);
-  // const { userVideo} = useUserVideos(userId)
-
-  console.log("Playlist on profile", playlists);
-  // console.log("Videos on profile", userVideo);
 
   const [videos, setVideos] = useState([]);
   const [user, setUser] = useState("");
   const [activeTab, setActiveTab] = useState("Home");
+  const token = localStorage.getItem("token");
 
   const getuserVideo = (userId) => {
     axios
       .get(`${base_url}/api/v1/videos/u/${userId}`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
       .then((res) => {
-        console.log("Channel's videos", res.data);
+        // console.log("Channel's videos", res.data);
         const videoData = res.data?.data?.[0]; // null-safe access
         const video = videoData?.video || []; // fallback to empty array
         setVideos(video.reverse());
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
+        toast("Somthing went wrong")
       });
   };
 
   const getChannelProfile = () => {
     axios
       .get(`${base_url}/api/v1/users/c/${username}`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
+       headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
       .then((res) => {
-        console.log("Channel Profile", res.data);
+        // console.log("Channel Profile", res.data);
         const userData = res.data.data;
         setUser(res.data.data);
         getuserVideo(userData._id);
         setUserId(userData._id);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log("Error channel profile",err);
+        toast.error("Somthing went wrong")
       });
   };
 
@@ -78,11 +76,12 @@ const ChannelProfile = () => {
         }
       )
       .then((res) => {
-        console.log("Toggle subscription", res.data);
+        // console.log("Toggle subscription", res.data);
         getChannelProfile();
       })
       .catch((err) => {
-        console.log(err);
+        // console.log("Error toggle subscription",err);
+        toast("Please login")
       });
   };
 
@@ -91,7 +90,7 @@ const ChannelProfile = () => {
   };
 
   const handleVideoClick = (video) => {
-    navigate("/dashboard/video-page", { state: { video } });
+    navigate(`/dashboard/video/${video._id}`, );
   };
 
   const handlePlaylist = (playlist) =>{
@@ -140,13 +139,13 @@ const ChannelProfile = () => {
       <div className="flex flex-col">
         <img
           className="h-35 m-5 mb-0 text-white object-cover"
-          src={user.coverImage || null}
+          src={user.coverImage || cover}
           alt="cover image"
         />
         <div className="flex flex-row m-5 p-3 items-center">
           <img
             className="h-35 w-35 mr-5 rounded-[50%] object-cover"
-            src={user.avatar}
+            src={user.avatar || avatar}
             alt="avatar"
           />
           <div className="flex flex-col gap-2 text-white ">
@@ -252,11 +251,13 @@ const ChannelProfile = () => {
                   playlists.map((playlist) => (
                     <div
                       key={playlist._id}
+                      onClick={()=>handlePlaylist(playlist)}
                       className="p-2 cursor-pointer rounded-2xl hover:bg-[#5c5b5b25] duration-300"
                     >
                       {playlist.videos.length > 0 ? (
                         <img
                           src={playlist.videos[0].thumbnail}
+                          onClick={()=>handlePlaylist(playlist)}
                           alt="thumbnail"
                           className="w-full aspect-video object-cover rounded-xl"
                         />
@@ -268,7 +269,7 @@ const ChannelProfile = () => {
 
                       <div className="flex flex-col p-2 font-medium text-white">
                         <h2 className="text-lg md:text-xl">{playlist.name}</h2>
-                        <p className="text-sm text-gray-400 hover:text-white">
+                        <p onClick={()=>handlePlaylist(playlist)} className="text-sm text-gray-400 hover:text-white">
                           View full playlist
                         </p>
                       </div>

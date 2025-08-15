@@ -12,6 +12,8 @@ import useChannel from "../hooks/useChannel";
 import useSubscription from "../hooks/useSubscription";
 import axios from "axios";
 import { base_url } from "../../utils/constant";
+import { toast } from "react-toastify";
+import useHistory from "../hooks/useHistory";
 
 const WatchPage = () => {
   const { videoId } = useParams();
@@ -25,12 +27,14 @@ const WatchPage = () => {
   const userId = videoById?.owner?._id;
   const { user, getChannelProfile } = useChannel(username);
   const { toggleSubscription } = useSubscription(userId);
+  const {addToWatchHistory} = useHistory(videoId)
 
   const [isDisliked, setIsDislike] = useState(false);
   const [views, setViews] = useState("");
 
   useEffect(()=>{
     getvideoViews()
+    addToWatchHistory(videoId)
   },[videoId])
 
   const getvideoViews = () => {
@@ -45,11 +49,11 @@ const WatchPage = () => {
         }
       )
       .then((res) => {
-        console.log("Video views", res.data);
+        // console.log("Video views", res.data);
         setViews(res.data.data.views);
       })
       .catch((err) => {
-        console.log("Video views error", err);
+        // console.log("Video views error", err);
       });
   };
 
@@ -66,7 +70,8 @@ const WatchPage = () => {
     const toggleResult = await toggleSubscription(userId);
     const profileResult = await getChannelProfile(username);
   } catch (err) {
-    console.error("❌ Error in handleSubscription", err);
+    // console.error("❌ Error in handleSubscription", err);
+    toast("Please Ligin")
   }
 
 };
@@ -237,7 +242,7 @@ const WatchPage = () => {
 
         <div className="bg-[#3f3f3f] p-3 rounded-xl mb-6 text-sm ">
           <div className="flex gap-4 mb-2">
-            <p>{views}{" "} views</p>
+            <p>{views || videoById.views}{" "} views</p>
             <p>{moment(videoById.createdAt).fromNow()}</p>
           </div>
           <p>{videoById.description}</p>
