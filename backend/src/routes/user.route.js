@@ -21,6 +21,7 @@ import {
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import {optionalAuth} from "../middlewares/optionalAuth.middleware.js"
 
 const router = Router();
 router.route("/register").post(
@@ -54,7 +55,7 @@ router
   .route("/cover-image")
   .patch(verifyJWT, upload.single("coverImage"), updateCoverImage);
 
-router.route("/c/:username").get(verifyJWT, userChannelProfile);
+router.route("/c/:username").get(optionalAuth, userChannelProfile);
 router.route("/u/:userId").get(verifyJWT, getUserById);
 
 router

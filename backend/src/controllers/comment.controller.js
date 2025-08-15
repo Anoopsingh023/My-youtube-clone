@@ -8,76 +8,70 @@ import { Like } from "../models/like.model.js";
 
 
 const getVideoComments = asyncHandler(async (req, res) => {
-  //TODO: get all comments for a video
   const { videoId } = req.params;
   const { page = 1, limit = 10 } = req.query;
 
   const skip = (page - 1) * limit;
 
-  const filter = {};
+  const filter = videoId ? { video: videoId } : {};
 
-  if (videoId) {
-    filter.video = videoId;
-  }
+  const totalComment = await Comment.countDocuments(filter);
 
-    const totalComment = await Comment.countDocuments(filter);
   const comments = await Comment.find(filter)
     .populate("owner", "username avatar fullName")
     .lean()
     .skip(parseInt(skip))
-    .limit(parseInt(limit))
+    .limit(parseInt(limit));
 
-  // Step 1: Get all likes for comments in one query
   const commentIds = comments.map((c) => c._id);
+
+  // Get all likes for these comments
   const likes = await Like.find({
     comment: { $in: commentIds },
   }).select("comment likedBy");
 
-  // Step 2: Build helper maps
   const likeCountMap = {};
-  const isLikedMap = {};
+  const likedByMap = {}; // Stores an array of userIds for each comment
 
   likes.forEach((like) => {
     const commentId = like.comment.toString();
     const likedBy = like.likedBy.toString();
 
-    //  Count likes
-    if (!likeCountMap[commentId]) {
-      likeCountMap[commentId] = 0;
-    }
-    likeCountMap[commentId]++;
+    // Count likes
+    likeCountMap[commentId] = (likeCountMap[commentId] || 0) + 1;
 
-    // Track if current user liked this comment
-    if (likedBy === req.user._id.toString()) {
-      isLikedMap[commentId] = true;
+    // Store likedBy list
+    if (!likedByMap[commentId]) {
+      likedByMap[commentId] = [];
     }
+    likedByMap[commentId].push(likedBy);
   });
 
-  // Step 3: Enrich each comment
+  const userId = req.user ? req.user._id.toString() : null;
+
   const enrichedComments = comments.map((comment) => {
     const id = comment._id.toString();
     return {
       ...comment,
-      isLiked: !!isLikedMap[id],
       likeCount: likeCountMap[id] || 0,
+      isLiked: userId ? likedByMap[id]?.includes(userId) || false : false,
     };
   });
 
-  return res
-    .status(200)
-    .json(
-      new apiResponse(
-        200,
-        {
-          enrichedComments,
-          page: parseInt(page),
-          totalPages: Math.ceil(totalComment / limit),
-          totalComment,
-        },
-        "All comments are fetched"
-      )
-    );
+  return res.status(200).json(
+    new apiResponse(
+      200,
+      {
+        enrichedComments,
+        page: parseInt(page),
+        totalPages: Math.ceil(totalComment / limit),
+        totalComment,
+      },
+      "All comments are fetched"
+    )
+  );
 });
+
 
 const addComment = asyncHandler(async (req, res) => {
   // TODO: add a comment to a video

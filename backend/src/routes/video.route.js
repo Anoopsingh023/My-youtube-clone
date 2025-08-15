@@ -19,6 +19,9 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 router.route("/").get(getAllVideo);
+router.route("/v/:videoId").get(getVideoById)
+router.route("/u/:userId").get(getUserVideos);
+
 router.use(verifyJWT);
 router.route("/views/:videoId").put(getTotalViewsOnVideo);
 
@@ -39,10 +42,10 @@ router.route("/publish").post(
 router
   .route("/v/:videoId")
   .patch(upload.single("thumbnail"), updateVideo)
-  .get(getVideoById)
+  // .get(getVideoById)
   .delete(deleteVideo);
 router.route("/toggle/publish/:videoId").patch(togglePublishStatus);
-router.route("/u/:userId").get(getUserVideos);
+
 
 router
   .route("/save/:videoId")

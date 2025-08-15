@@ -9,15 +9,18 @@ import {
     updatePlaylist,
 } from "../controllers/playlist.controller.js"
 import {verifyJWT} from "../middlewares/auth.middleware.js"
+import {optionalAuth} from "../middlewares/optionalAuth.middleware.js"
 
 const router = Router();
+
+router.route("/user/:userId").get(optionalAuth, getUserPlaylists);
 
 router.use(verifyJWT); // Apply verifyJWT middleware to all routes in this file
 
 router.route("/create").post(createPlaylist)
 
 router
-    .route("/:playlistId")
+    .route("/user/p/:playlistId")
     .get(getPlaylistById)
     .patch(updatePlaylist)
     .delete(deletePlaylist);
@@ -25,6 +28,5 @@ router
 router.route("/add/:playlistId/add-videos").post(addVideosToPlaylistByQuery);
 router.route("/remove/:videoId/:playlistId").patch(removeVideoFromPlaylist);
 
-router.route("/user/:userId").get(getUserPlaylists);
 
 export default router
