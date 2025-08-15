@@ -47,27 +47,29 @@ const Comment = (video) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-
-    axios
-      .post(
-        `${base_url}/api/v1/comments/v/${video.message._id}`,
-        {
-          content: content,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
+    if (content) {
+      axios
+        .post(
+          `${base_url}/api/v1/comments/v/${video.message._id}`,
+          {
+            content: content,
           },
-        }
-      )
-      .then((res) => {
-        // console.log("comment", res.data);
-        getVideoComments();
-      })
-      .catch((err) => {
-        // console.log("Error adding comment",err);
-        toast.error("Please login");
-      });
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        )
+        .then((res) => {
+          // console.log("comment", res.data);
+          getVideoComments();
+        })
+        .catch((err) => {
+          console.log("Error adding comment", err);
+          toast.error("Please login");
+        });
+    }
+    toast.error("Comment required")
   };
 
   const handleSortBy = (e) => {
