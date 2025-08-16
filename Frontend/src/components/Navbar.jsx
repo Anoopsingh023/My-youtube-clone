@@ -171,7 +171,6 @@ const Navbar = ({ onSearch, onToggleSidebar }) => {
                             "Your Channel",
                             "Theme",
                             "Help",
-                            "Send feedback",
                             "Logout",
                           ].map((menu, index) => (
                             <li
