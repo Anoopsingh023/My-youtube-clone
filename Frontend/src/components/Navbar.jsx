@@ -73,6 +73,10 @@ const Navbar = ({ onSearch, onToggleSidebar }) => {
     }
   };
 
+  const handleFeedbackClick = () => {
+    navigate(`/dashboard/feedback`);
+  };
+
   return (
     <nav className="flex items-center justify-between px-5 py-3 text-white sticky top-0 z-40 bg-[#0f0f0f]">
       {openSearchInput ? (
@@ -133,50 +137,57 @@ const Navbar = ({ onSearch, onToggleSidebar }) => {
           {logedin ? (
             <>
               {/* Avatar - Hidden on Mobile */}
-              <div className=" flex-col hidden sm:block">
-                <div ref={dropdownRef} className="relative">
-                  <img
-                    onClick={() => setOpen((o) => !o)}
-                    className="h-12 w-12 rounded-full cursor-pointer"
-                    src={localStorage.getItem("avatar")}
-                    alt=""
-                  />
-                  {open && (
-                    <div className="bg-[#383838] absolute w-56 z-50 -left-45 top-14 p-5 rounded-2xl">
-                      <div className="flex items-center gap-4">
-                        <img
-                          className="h-10 w-10 rounded-full"
-                          src={localStorage.getItem("avatar")}
-                          alt=""
-                        />
-                        <div>
-                          <h4>{localStorage.getItem("name")}</h4>
-                          <p>{localStorage.getItem("userName")}</p>
+              <div className="flex flex-row gap-4">
+                <button
+                  onClick={handleFeedbackClick}
+                  className="border border-[#6f6d6d] bg-[#232323] py-2 px-3 rounded-full cursor-pointer text-blue-400 hover:bg-[#4c9ed566]"
+                >
+                  Feedback
+                </button>
+                <div className=" flex-col hidden sm:block">
+                  <div ref={dropdownRef} className="relative">
+                    <img
+                      onClick={() => setOpen((o) => !o)}
+                      className="h-12 w-12 rounded-full cursor-pointer"
+                      src={localStorage.getItem("avatar")}
+                      alt=""
+                    />
+                    {open && (
+                      <div className="bg-[#383838] absolute w-56 z-50 -left-45 top-14 p-5 rounded-2xl">
+                        <div className="flex items-center gap-4">
+                          <img
+                            className="h-10 w-10 rounded-full"
+                            src={localStorage.getItem("avatar")}
+                            alt=""
+                          />
+                          <div>
+                            <h4>{localStorage.getItem("name")}</h4>
+                            <p>{localStorage.getItem("userName")}</p>
+                          </div>
                         </div>
+                        <hr className="my-2 border-[#848282]" />
+                        <ul>
+                          {[
+                            "Your Channel",
+                            "Theme",
+                            "Help",
+                            "Send feedback",
+                            "Logout",
+                          ].map((menu, index) => (
+                            <li
+                              key={index}
+                              onClick={() => handleMenuClick(menu)}
+                              className="py-2 px-4 hover:bg-[#565555] rounded-xl cursor-pointer"
+                            >
+                              {menu}
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                      <hr className="my-2 border-[#848282]" />
-                      <ul>
-                        {[
-                          "Your Channel",
-                          "Theme",
-                          "Help",
-                          "Send feedback",
-                          "Logout",
-                        ].map((menu, index) => (
-                          <li
-                            key={index}
-                            onClick={() => handleMenuClick(menu)}
-                            className="py-2 px-4 hover:bg-[#565555] rounded-xl cursor-pointer"
-                          >
-                            {menu}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
-
               {/* Search icon for Mobile */}
               <span className=" sm:hidden">
                 <i
@@ -188,6 +199,12 @@ const Navbar = ({ onSearch, onToggleSidebar }) => {
           ) : (
             <div className="flex gap-2">
               {/* Login Button hidden on Mobile, show search icon */}
+              <button
+                  onClick={handleFeedbackClick}
+                  className="border border-[#6f6d6d] bg-[#232323] py-2 px-3 rounded-full cursor-pointer text-blue-400 hover:bg-[#4c9ed566]"
+                >
+                  Feedback
+                </button>
               <Link
                 to="/login"
                 className="border bg-[#232323] py-2 px-4 rounded-full cursor-pointer text-blue-400 hover:bg-[#4c9ed566]"

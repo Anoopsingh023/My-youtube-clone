@@ -22,6 +22,7 @@ import History from "./components/Dashboard/History";
 import Playlist from "./components/Dashboard/Playlist";
 import WatchPage from "./components/Dashboard/WatchPage";
 import User from "./components/Dashboard/User";
+import Feedback from "./components/Dashboard/Feedback";
 
 const appRouter = createBrowserRouter([
   {
@@ -53,6 +54,7 @@ const appRouter = createBrowserRouter([
       { path: "history", element: <History /> },
       { path: "feed/you", element: <User /> },
       { path: "playlist/:playlistId", element: <Playlist /> },
+      { path: "feedback", element: <Feedback /> },
     ],
   },
   {
