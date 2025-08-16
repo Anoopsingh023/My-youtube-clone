@@ -75,7 +75,7 @@ const Dashboard = () => {
             <span className="text-xs">Home</span>
           </button>
           <button
-            onClick={() => navigate("/dashboard/shorts")}
+            onClick={() => navigate("/dashboard/short-page")}
             className="flex flex-col items-center text-gray-300 hover:text-white"
           >
             <Zap size={22}/>
