@@ -20,7 +20,7 @@ const User = () => {
   const { history } = useHistory();
   const [SavedPlaylists, setSavedplaylists] = useState([]);
   const [likedVideos, setLikedVideos] = useState([]);
-  const [isLiked, setIsLiked] = useState(false)
+  const [isLoged, setIsLoged] = useState(false)
 
   const navigate = useNavigate();
 
@@ -58,7 +58,7 @@ const User = () => {
   
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      setIsLiked(true)
+      setIsLoged(true)
       fetchSavedPlaylist()
       fetchLikedVideos();
     }
@@ -122,7 +122,7 @@ const User = () => {
 
   return (
     <>
-    {isLiked ? <div>
+    {isLoged ? <div>
       <div className="flex flex-row  gap-4">
         <img src={avatar} alt="avatar" className="h-30 w-30 rounded-full" />
         <div className="flex flex-col gap-2">
