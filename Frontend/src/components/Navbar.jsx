@@ -78,7 +78,7 @@ const Navbar = ({ onSearch, onToggleSidebar }) => {
   };
 
   return (
-    <nav className="flex items-center justify-between px-5 py-3 text-white sticky top-0 z-40 bg-[#0f0f0f]">
+    <nav className="flex items-center justify-between px-5 py-3 text-white sticky top-0 z-40 ">
       {openSearchInput ? (
         // Full-width search view
         <div className="flex items-center w-full gap-2">
