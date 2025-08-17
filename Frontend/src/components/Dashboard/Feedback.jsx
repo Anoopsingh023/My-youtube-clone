@@ -26,10 +26,10 @@ const Feedback = () => {
 
     emailjs
       .send(
-        "service_j4smnw8",   // Replace with your EmailJS Service ID
-        "template_p79fzr5",  // Replace with your EmailJS Template ID
+        "service_psryq5i",   // Replace with your EmailJS Service ID
+        "template_oyk0a31",  // Replace with your EmailJS Template ID
         formData,
-        "rl85qMlwuLvALCyvZ"    // Replace with your EmailJS Public Key
+        "H5hCnRav-8fPio4ev"    // Replace with your EmailJS Public Key
       )
       .then(
         () => {
